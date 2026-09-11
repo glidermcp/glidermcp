@@ -1,76 +1,65 @@
-# glidermcp.com (Public Support Shell)
+# GliderMCP
 
-This repository is the public support and issue-intake front door for the Glider MCP product family.
+Local tools for coding agents. Start with **Glider** to navigate, analyze, edit, and refactor C#/.NET code through MCP.
 
-## Current repository role
+[Website](https://glidermcp.com) · [Documentation](https://glidermcp.com/docs) · [Report a problem](https://github.com/glidermcp/glidermcp/issues/new/choose)
 
-- Public issue reporting and support triage
-- Public project links and migration guidance
-- Sponsorship metadata
+## Choose a product
 
-This repository is intentionally minimal.
+| Product and installation | What it does |
+| --- | --- |
+| [**Glider**](https://glidermcp.com/glider/installation) | C#/.NET navigation, diagnostics, analysis, edits, and refactors |
+| [**TGlider**](https://glidermcp.com/tglider/installation) | TypeScript and JavaScript navigation, analysis, and edits |
+| [**Scout**](https://glidermcp.com/scout/installation) | Repository search across files, text, code patterns, and concepts |
+| [**GliderTrace**](https://glidermcp.com/glider-trace/installation) | Command execution, tests, and .NET runtime evidence |
 
-## Where to file issues
+Each product connects independently to your MCP client. Choose its installation guide for requirements, connection instructions, and verification.
 
-Please open issues in this repository and select the relevant product in the issue template:
+## Plugins and configuration
 
-- `glider` (C# MCP)
-- `glider-trace` (runtime evidence MCP server)
-- `tglider` (TypeScript MCP)
-- `scout` (universal code search MCP)
-- `glidermcp-web` (website/docs UX)
+This repository provides plugins for Claude Code and Codex:
 
-## Quick links
+- [Glider plugin](plugins/glidermcp/README.md)
+- [TGlider plugin](plugins/tglider/README.md)
+- [Scout plugin](plugins/scout/README.md)
+- [GliderTrace plugin](plugins/glider-trace/README.md)
 
-- Product site: https://glidermcp.com
-- Glider: https://glidermcp.com/glider - https://www.nuget.org/packages/glider
-- GliderTrace: https://glidermcp.com/glider-trace - https://www.nuget.org/packages/glider-trace
-- TGlider: https://glidermcp.com/tglider - https://www.npmjs.com/package/tglider
-- Scout: https://glidermcp.com/scout - https://www.npmjs.com/package/@glidermcp/scout
+Install the server required by your chosen plugin first. Glider, GliderTrace, and Scout plugins launch an installed executable.
+The TGlider plugin launches through `npx` and requires Node.js/npm. It does not require Scout.
 
-## Plugin and config assets
+After installing Glider, connect its plugin with your chosen client:
 
-This repository ships root-level marketplace and config assets for agent clients:
-
-- `plugins/glidermcp/` - C# semantic navigation plugin.
-- `plugins/glider-trace/` - .NET runtime evidence plugin.
-- `plugins/tglider/` - TypeScript and JavaScript semantic navigation plugin.
-- `plugins/scout/` - universal code search plugin.
-- `.claude-plugin/marketplace.json` - Claude Code marketplace entry.
-- `.agents/plugins/marketplace.json` - Codex marketplace entry.
-- `install/claude-code/.mcp.json` - direct Claude Code project config template.
-- `install/codex/config.toml` - direct Codex global config snippet.
-
-Every plugin launches a server that must already be on `PATH`:
+**Claude Code**
 
 ```bash
-dotnet tool install --global glider          # glidermcp plugin
-dotnet tool install --global glider-trace    # glider-trace plugin
-npm install -g @glidermcp/scout              # scout plugin
-# tglider runs via npx and needs only Node.js/npm
-```
-
-Scout is launched as the literal command `scout`, so it needs a real binary on `PATH` rather than an `npx` entry. TGlider additionally needs one there for its own `search_text`. See `plugins/scout/README.md`.
-
-Claude Code plugin install:
-
-```bash
-claude plugin marketplace add glidermcp/glidermcp.com
+claude plugin marketplace add glidermcp/glidermcp
 claude plugin install glidermcp@glidermcp
-claude plugin install glider-trace@glidermcp
-claude plugin install tglider@glidermcp
-claude plugin install scout@glidermcp
 ```
 
-Codex plugin install:
+**Codex CLI**
 
 ```bash
-codex plugin marketplace add glidermcp/glidermcp.com
-codex
-# Open /plugins and install glidermcp, glider-trace, tglider, or scout.
+codex plugin marketplace add glidermcp/glidermcp
+codex plugin add glidermcp@glidermcp
 ```
 
-## Notes
+Start a new Codex session after installation. See the [Codex plugin guide](https://learn.chatgpt.com/docs/plugins) for details.
+For another product, replace the plugin name before `@` with `tglider`, `scout`, or `glider-trace`.
 
-- Pull requests with runtime/product code are not accepted in this repository.
-- If maintainers need implementation details, they will mirror or transfer context into the private monorepo.
+For direct MCP configuration, use the [configuration templates](install/README.md). Keep your existing client configuration and add only the servers you need.
+
+## Price and privacy
+
+The products will always be free for non-commercial use. Commercial use is free for now.
+Each local server package expires one month after release and must be updated. See [pricing and license terms](https://glidermcp.com/pricing).
+
+Servers process code locally. Your MCP client controls what returned content reaches its model provider.
+See [privacy and telemetry](https://glidermcp.com/privacy) for product data policies and controls.
+
+## Support and contributions
+
+[Open an issue](https://github.com/glidermcp/glidermcp/issues/new/choose) and select the affected product or website.
+Documentation corrections, configuration fixes, and feature requests are welcome. See [contribution guidance](CONTRIBUTING.md).
+
+This repository contains public support resources, plugins, and configuration templates. It does not contain the product server implementations.
+Its [MIT license](LICENSE) covers this repository's assets. Product packages have their own license terms.

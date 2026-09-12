@@ -11,4 +11,4 @@ Start by loading the relevant workspace when needed. Prefer semantic symbol, ref
 
 For edits, gather evidence first with tools for references, callers, outgoing calls, diagnostics, dependency topology, and change impact. Prefer preview-first refactoring tools where available, and refresh diagnostics after meaningful edits.
 
-For non-code assets, generated output, literal config files, and repo-wide text search, prefer Scout's `find` when Scout is installed. TGlider's own `search_text` searches with Scout and requires it - without a `scout` binary on `PATH` it returns a `scout_not_installed` hint, so install Scout globally to use that tool at all. Use shell text search when Scout is absent, or when neither can answer the question.
+TGlider has no text-search tool and does not require Scout. For repository-wide text search, use Scout's `find` when connected. Otherwise, use shell text search.

@@ -17,7 +17,8 @@ Read the ordinary Git diff first. Use `changed_symbols` to map changed C# line r
 The tool does not fetch Git history or choose a baseline.
 
 - Supply `hunks` with before/after paths and changed ranges from the selected comparison.
-- Supply the full prior file text in `beforeFiles` for modifications, with paths matching each hunk's `beforePath`.
+- Supply full prior text in `beforeFiles` for every file with a before-side, including modifications, renames, and pure deletions.
+- Match each prior file path to its hunk's `beforePath`; deleted files are absent from the loaded after-state.
 - A pure addition needs no prior file text. A pure deletion has no after-side path or range.
 - Preserve both paths for a rename. Use the schema's one-based, inclusive changed-line ranges.
 

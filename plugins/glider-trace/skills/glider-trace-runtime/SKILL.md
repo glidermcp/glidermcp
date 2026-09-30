@@ -33,6 +33,8 @@ Repeat status after a restart or suspected scope mismatch, rather than before ev
 | Stored failures or measurements | Session and analysis tools | Inspect coverage and the underlying artifacts before drawing conclusions. |
 
 Use the narrowest operation that answers the task. A full pipeline is unnecessary for every source edit.
+For repository text searches during an investigation, prefer Scout when available. Read `$scout-search` when installed.
+Use scoped shell search when Scout is unavailable. Search results supplement the stored runtime evidence.
 Give new sessions a useful label. Record the source revision, target, configuration, filters, and workload with the investigation.
 Commands can restore packages, create build outputs, and run application side effects. The task's existing authorization still applies.
 

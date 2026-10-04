@@ -6,9 +6,17 @@ A found executable does not prove the selected process, target framework, adapte
 
 ## Server and project toolchains
 
-GliderTrace 1.3.0 package setup uses the .NET 10 SDK and `glider-trace` on `PATH`.
+GliderTrace 1.3.0 package setup uses the .NET 10 SDK and `dotnet` on `PATH`.
+The recommended client configuration uses `dotnet tool exec "glider-trace@*" --no-http-cache --verbosity quiet --` before server arguments.
+It checks for the latest stable package at each server start. Existing servers keep their version until they restart.
+
+Check SDK selection from the server launch directory. A project `global.json` can select an older SDK without `tool exec`.
+The plugin configuration uses the global `glider-trace` executable on `PATH` instead.
+See the [setup guide](https://glidermcp.com/glider-trace/setup#updates) for fixed versions, network requirements, and the global-install alternative.
+
 Follow the installed package's requirements when that version changes. Building and testing also require the repository's selected toolchain.
 A newer SDK does not automatically satisfy a pinned `global.json`, legacy targeting pack, test adapter, or workload requirement.
+
 Optional diagnostic executables must be visible on the server's `PATH`. The server can inherit a different environment from the shell.
 Current collector discovery excludes executable paths inside trusted workspace roots. Workspace NuGet uses a separate explicit policy.
 

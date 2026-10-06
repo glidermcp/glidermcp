@@ -1,8 +1,15 @@
 {
   "mcp_servers": {
     "glider-trace": {
-      "command": "glider-trace",
+      "command": "dotnet",
       "args": [
+        "tool",
+        "exec",
+        "glider-trace@*",
+        "--no-http-cache",
+        "--verbosity",
+        "quiet",
+        "--",
         "--default-timeout",
         "30m"
       ]

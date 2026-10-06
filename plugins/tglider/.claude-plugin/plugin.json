@@ -16,5 +16,6 @@
     "semantic-code-navigation",
     "refactoring"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "version": "0.2.0"
 }

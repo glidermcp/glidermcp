@@ -1,6 +1,6 @@
 {
   "name": "tglider",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Connect coding agents to the local TGlider TypeScript and JavaScript semantic MCP server.",
   "author": {
     "name": "GliderMCP",

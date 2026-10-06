@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "tglider",
+        "tglider@latest",
         "--default-timeout",
         "30m"
       ]

@@ -1,15 +1,29 @@
 {
   "mcpServers": {
     "glider": {
-      "command": "glider",
+      "command": "dotnet",
       "args": [
+        "tool",
+        "exec",
+        "glider@*",
+        "--no-http-cache",
+        "--verbosity",
+        "quiet",
+        "--",
         "--default-timeout",
         "30m"
       ]
     },
     "glider-trace": {
-      "command": "glider-trace",
+      "command": "dotnet",
       "args": [
+        "tool",
+        "exec",
+        "glider-trace@*",
+        "--no-http-cache",
+        "--verbosity",
+        "quiet",
+        "--",
         "--default-timeout",
         "30m"
       ]
@@ -18,14 +32,25 @@
       "command": "npx",
       "args": [
         "-y",
-        "tglider",
+        "tglider@latest",
         "--default-timeout",
         "30m"
       ]
     },
     "scout": {
-      "command": "scout",
-      "args": []
+      "command": "npx",
+      "args": [
+        "-y",
+        "@glidermcp/scout@latest"
+      ]
+    },
+    "jglider": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "--ignore-scripts",
+        "jglider@next"
+      ]
     }
   }
 }

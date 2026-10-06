@@ -1,23 +1,29 @@
 [mcp_servers.glider]
-command = "glider"
-args = ["--default-timeout", "30m"]
+command = "dotnet"
+args = ["tool", "exec", "glider@*", "--no-http-cache", "--verbosity", "quiet", "--", "--default-timeout", "30m"]
 startup_timeout_sec = 30
 tool_timeout_sec = 1200
 
 [mcp_servers."glider-trace"]
-command = "glider-trace"
-args = ["--default-timeout", "30m"]
+command = "dotnet"
+args = ["tool", "exec", "glider-trace@*", "--no-http-cache", "--verbosity", "quiet", "--", "--default-timeout", "30m"]
 startup_timeout_sec = 30
 tool_timeout_sec = 1200
 
 [mcp_servers.tglider]
 command = "npx"
-args = ["-y", "tglider", "--default-timeout", "30m"]
+args = ["-y", "tglider@latest", "--default-timeout", "30m"]
 startup_timeout_sec = 30
 tool_timeout_sec = 1200
 
 [mcp_servers.scout]
-command = "scout"
-args = []
+command = "npx"
+args = ["-y", "@glidermcp/scout@latest"]
 startup_timeout_sec = 30
 tool_timeout_sec = 60
+
+[mcp_servers.jglider]
+command = "npx"
+args = ["-y", "--ignore-scripts", "jglider@next"]
+startup_timeout_sec = 120
+tool_timeout_sec = 1200

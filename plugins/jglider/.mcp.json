@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "jglider": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "--ignore-scripts",
+        "jglider@next"
+      ]
+    }
+  }
+}

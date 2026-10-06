@@ -10,6 +10,7 @@ If a tool is unavailable, state the limitation and choose an available alternati
 
 ## Verify the workspace
 
+A project configuration can preload a solution with `--solution`. The portable plugin leaves the solution choice to the agent.
 Call `server_status` before the first Glider operation in a task. Compare `solutionPath` and `solutionRoot` with the intended checkout.
 A loaded workspace can belong to another worktree. Changing the shell directory does not change Glider's workspace.
 

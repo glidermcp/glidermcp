@@ -1,8 +1,11 @@
 {
   "mcpServers": {
     "scout": {
-      "command": "scout",
-      "args": []
+      "command": "npx",
+      "args": [
+        "-y",
+        "@glidermcp/scout@latest"
+      ]
     }
   }
 }

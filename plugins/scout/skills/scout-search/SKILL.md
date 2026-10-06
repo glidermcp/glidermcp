@@ -79,3 +79,5 @@ Review the diff itself, including deletions and files without grammar support.
 Scout does not edit workspace source. Root loads and indexing can write Scout state; semantic setup can download model files.
 Do not enable semantic indexing, replace models, or change ignore rules merely to make a query return more results.
 Before public feedback, check scope, version, degradation, and reproducibility. Follow the installed feedback instructions and obtain publication authorization.
+
+Read [workspace.md](references/workspace.md) for CLI limits, workspace configuration, resource behavior, and startup recovery.

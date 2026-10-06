@@ -1,0 +1,28 @@
+{
+  "name": "keep",
+  "version": "0.1.0",
+  "description": "Shared document knowledge through an existing Keep connection. No server starts automatically.",
+  "author": {
+    "name": "GliderMCP",
+    "url": "https://glidermcp.com"
+  },
+  "homepage": "https://github.com/glidermcp/keep",
+  "repository": "https://github.com/glidermcp/glidermcp",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Keep",
+    "shortDescription": "Shared document knowledge through an existing Keep connection. No server starts automatically.",
+    "longDescription": "Shared document knowledge through an existing Keep connection. No server starts automatically.",
+    "developerName": "GliderMCP",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/glidermcp/keep",
+    "defaultPrompt": [
+      "Use the keep-knowledge skill for this task."
+    ],
+    "screenshots": []
+  }
+}

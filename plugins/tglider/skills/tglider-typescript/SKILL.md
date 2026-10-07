@@ -14,4 +14,4 @@ For edits, gather evidence first with tools for references, callers, outgoing ca
 
 TGlider has no text-search tool and does not require Scout. For repository-wide text search, use Scout's `find` when connected. Otherwise, use shell text search.
 
-Read [workspace.md](references/workspace.md) for startup, HTTP, CLI options, and load recovery.
+Read [workspace.md](references/workspace.md) for startup, HTTP, CLI options, load recovery, and local error history in development builds.

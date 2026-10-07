@@ -11,7 +11,7 @@ The recommended client configuration uses `dotnet tool exec "glider-trace@*" --n
 It checks for the latest stable package at each server start. Existing servers keep their version until they restart.
 
 Check SDK selection from the server launch directory. A project `global.json` can select an older SDK without `tool exec`.
-The plugin configuration uses the global `glider-trace` executable on `PATH` instead.
+The plugin uses the same launcher. It requires network access to refresh NuGet metadata at each start.
 See the [setup guide](https://glidermcp.com/glider-trace/setup#updates) for fixed versions, network requirements, and the global-install alternative.
 
 Follow the installed package's requirements when that version changes. Building and testing also require the repository's selected toolchain.

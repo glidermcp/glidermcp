@@ -16,5 +16,6 @@
     "fuzzy-search",
     "code-intelligence"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "version": "0.2.0"
 }

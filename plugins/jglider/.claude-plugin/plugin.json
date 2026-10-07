@@ -1,0 +1,13 @@
+{
+  "name": "jglider",
+  "version": "0.1.0",
+  "description": "Read-only Java source and compiler evidence for the JGlider preview.",
+  "author": {
+    "name": "GliderMCP",
+    "url": "https://glidermcp.com"
+  },
+  "homepage": "https://glidermcp.com/jglider",
+  "repository": "https://github.com/glidermcp/glidermcp",
+  "license": "MIT",
+  "skills": "./skills/"
+}

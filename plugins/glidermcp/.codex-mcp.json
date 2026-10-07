@@ -1,8 +1,15 @@
 {
   "mcp_servers": {
     "glider": {
-      "command": "glider",
+      "command": "dotnet",
       "args": [
+        "tool",
+        "exec",
+        "glider@*",
+        "--no-http-cache",
+        "--verbosity",
+        "quiet",
+        "--",
         "--default-timeout",
         "30m"
       ]

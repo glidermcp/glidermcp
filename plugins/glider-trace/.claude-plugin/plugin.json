@@ -16,5 +16,6 @@
     "runtime-evidence",
     "test-evidence"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "version": "0.2.0"
 }

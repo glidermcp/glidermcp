@@ -26,6 +26,16 @@
       "name": "scout",
       "source": "./plugins/scout",
       "description": "Universal read-only code search over any repository and any language - ranked fuzzy discovery and exhaustive strict search from a resident index, for Claude Code."
+    },
+    {
+      "name": "jglider",
+      "description": "Read-only Java source and compiler evidence for the JGlider preview.",
+      "source": "./plugins/jglider"
+    },
+    {
+      "name": "keep",
+      "description": "Shared document knowledge through an existing Keep connection. No server starts automatically.",
+      "source": "./plugins/keep"
     }
   ]
 }

@@ -56,6 +56,32 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Coding"
+    },
+    {
+      "name": "jglider",
+      "description": "Read-only Java source and compiler evidence for the JGlider preview.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jglider"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "keep",
+      "description": "Shared document knowledge through an existing Keep connection. No server starts automatically.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/keep"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Coding"
     }
   ]
 }

@@ -1,10 +1,11 @@
 {
   "mcpServers": {
-    "scout": {
+    "jglider": {
       "command": "npx",
       "args": [
         "-y",
-        "@glidermcp/scout@latest"
+        "--ignore-scripts",
+        "jglider@next"
       ]
     }
   }

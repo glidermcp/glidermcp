@@ -22,24 +22,44 @@ A loaded workspace can belong to another worktree. Changing the shell directory 
 
 Repeat the status check after a server restart or suspected root mismatch. Do not add a status call before every tool call.
 Relative scope paths use `solutionRoot`, which can differ from the repository root and watched directory. Prefer absolute paths when uncertain.
+The file tools authorize paths under the loaded solution or project directory. Referenced project membership does not expand this boundary.
+For a referenced file outside that root, load the containing `.sln` or `.slnx` whose directory contains the file, then retry.
+The watched directory does not authorize file access. A successful read does not establish full-solution compiler health.
 
 Agents connected to the same server share its loaded workspace. Coordinate root changes with other users, or use separate server instances.
 A separate Git worktree alone does not isolate the server.
 
 ## Discover and read code
 
-Start with `find_code` for navigation. Select the intent that fits the question, such as symbols, references, callers, or file outlines.
-Use `search_symbols`, `resolve_symbol`, or `get_symbol_at_position` when direct discovery is useful.
+Select a path that fits the task. Read only the reference that applies.
+
+| Task | Minimum useful path |
+| --- | --- |
+| Known file and source range | Read that bounded range directly. Discover a key only when the operation needs identity. |
+| Unknown location or symbol | Use `find_code`, `search_symbols`, or `resolve_symbol`, then inspect the selected match. |
+| Inheritance or call chain | Discover the exact symbol, then use hierarchy, references, or caller tools. |
+| Contract refactor | Read [editing.md](references/editing.md). Inspect impact, preview the refactor, and validate affected callers. |
+| External package API | Read [dependencies.md](references/dependencies.md). Inspect the selected assembly through `view_external_definition`. |
+| Dependency audit | Read [dependencies.md](references/dependencies.md). Check usage, assets, graph coverage, and non-source requirements. |
+| Diff review | Read [review.md](references/review.md). Select the baseline, inspect the diff, and assess relevant symbol impact. |
+
+Stop discovery when the location, cause, intended change, and validation are sufficient.
+Expand only to resolve a concrete uncertainty. A local body fix does not require a complete caller audit.
+A contract or cross-project change requires the relevant callers, implementations, external definitions, and configuration coverage.
 
 Pass returned `symbolKey` values unchanged to compatible tools. Keys are opaque, not permanent names.
 Discover new keys after a worktree, signature, or project change, or when a tool reports a stale key.
-Use returned file paths rather than guessing a filename from a type name. Inspect an outline before requesting large source ranges.
+Use returned file paths rather than guessing a filename from a type name.
+Use an outline when it helps locate a declaration. A known range needs no redundant outline.
+Avoid full-file text plus full-member expansion when one member or a returned key answers the task.
+Use ordinary bounded source reads for exploration. Request exact raw text only for an impending guarded edit.
 
 Use `search_text` for literal text in loaded documents. Check coverage and unreadable-document counts before interpreting zero matches as absence.
 Follow returned pagination and partial-result guidance. A successful empty result differs from a failed or incomplete query.
 
 For unreferenced files, other languages, or repository-wide text, use Scout's `find` when available as a separate server.
-Use an appropriate language server for semantic work in another language. Use scoped shell inspection when available tools cannot answer.
+Use an appropriate language server for semantic work in another language. Scoped literal inspection can answer a text question. It cannot establish symbol identity, resolved references, or semantic absence.
+Follow repository tool rules for shell inspection.
 Shell commands remain appropriate for Git history, solution discovery, builds, and tests.
 
 ## Edit and validate
@@ -62,6 +82,8 @@ For package APIs, dependency cleanup, or project architecture, read [dependencie
 Check `success`, application state, coverage, and recovery guidance before continuing.
 If an edit applied but synchronization failed, refresh the workspace and verify the result. Do not repeat the write blindly.
 For incomplete results, follow the suggested scope or pagination instead of claiming complete coverage.
+For an ambiguous file outline, retain the path and select a project context. In `find_code`, use `scope.mode=project` and `scope.projectName`.
+Development builds after 12.4.8 provide `candidateProjectNames` and retry arguments. Earlier builds name the contexts in the error.
 
 Before reporting a suspected product defect, verify the root and retry when practical. State version, platform, expected behavior, and observed limits.
 Search public issues for the same product and symptom. For an open issue lacking reproduction, contribute new sanitized evidence as a comment.

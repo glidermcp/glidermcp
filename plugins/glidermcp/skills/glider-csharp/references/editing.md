@@ -20,14 +20,20 @@ For a move, inspect references the tool cannot update. Do not assume every refer
 
 ## Preview, apply, and inspect
 
-1. Inspect relevant references, callers, and diagnostics. Use `analyze_change_impact` before a rename or move.
+1. Inspect the code and tests that explain the change. Inspect callers for a contract change.
+   Use `analyze_change_impact` before a rename or move. Expand a local fix only for a concrete uncertainty.
 2. Set `applyChanges: false` when supported and inspect the proposed diff. Do not assume writes default to preview.
 3. Apply the intended change after the preview is acceptable. A preview does not reserve the source against concurrent edits.
 4. Inspect whether the operation applied, whether the workspace updated, and which diagnostics the tool checked.
 
 For `replace_member`, obtain `replacementSpans` from `get_symbol_info`, then read the exact declaration with `get_file_contents`.
 Exclude outer trivia from `expectedText` and `memberCode`. Select the declaration file when a partial member has several locations.
-For `replace_range`, request `includeRawContent: true` and preserve `rawContent` whitespace in `expectedText`.
+Request raw source only for the exact window of an impending guarded operation.
+For `replace_range`, preserve `rawContent` whitespace and terminators in `expectedText`.
+Development builds after 12.4.8 support `get_file_contents` with `contentMode: "raw"`. This mode returns one exact source representation.
+Use it only when the installed schema advertises `contentMode`. Earlier versions require `includeRawContent: true` and return both representations.
+The default and legacy `includeRawContent` behavior remain compatible. A null raw field requires a smaller window before an edit.
+After a line-limit cut, use only the returned range. A truncated character window supplies no exact raw text.
 Range lines and UTF-16 columns are one-based, and the end position is exclusive. Do not count Unicode characters as UTF-16 units.
 
 After an expected-text conflict, read the current source and construct a fresh edit. Do not remove the conflict check to force a write.

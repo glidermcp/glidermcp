@@ -36,12 +36,36 @@ Select a path that fits the task. Read only the reference that applies.
 | Task | Minimum useful path |
 | --- | --- |
 | Known file and source range | Read that bounded range directly. Discover a key only when the operation needs identity. |
-| Unknown location or symbol | Use `find_code`, `search_symbols`, or `resolve_symbol`, then inspect the selected match. |
+| Unknown location or symbol | Start with `find_code`; select symbol, fileOutline, or literalText for the task. Inspect the selected match. |
 | Inheritance or call chain | Discover the exact symbol, then use hierarchy, references, or caller tools. |
 | Contract refactor | Read [editing.md](references/editing.md). Inspect impact, preview the refactor, and validate affected callers. |
 | External package API | Read [dependencies.md](references/dependencies.md). Inspect the selected assembly through `view_external_definition`. |
 | Dependency audit | Read [dependencies.md](references/dependencies.md). Check usage, assets, graph coverage, and non-source requirements. |
 | Diff review | Read [review.md](references/review.md). Select the baseline, inspect the diff, and assess relevant symbol impact. |
+
+`find_code` supports several search routes. Select the route instead of relying on the shape of the query.
+
+- `auto` and `symbol` search symbol names. Plain text matches name fragments without case sensitivity; `*` and `?` match whole names.
+- `fileOutline` accepts an exact path, a loaded C# filename, or a symbol name. It does not support file globs.
+- `literalText` searches loaded documents for literal text. It does not interpret regex.
+- For a .NET regular expression, use `search_text` with `query` and `useRegex=true`.
+- `references`, `implementations`, `callers`, and `hierarchy` resolve a symbol name before the selected operation.
+
+`auto` searches symbols only; it does not detect filenames or text patterns. Choose among candidates when names are ambiguous.
+Use `search_symbols` directly when namespace, accessibility, or sort controls are needed.
+For file patterns or files outside the loaded workspace, use Scout according to repository policy.
+
+Choose the next operation from the task, not from a fixed checklist:
+
+| Needed evidence | Next operation |
+| --- | --- |
+| Source method or type | Pass the selected key unchanged to `get_method_source` or `get_type_source`. |
+| Nearby source context | When a source path exists, read `filePath` with a bounded range around `lineNumber` through `get_file_contents`. |
+| Declaration details or additional locations | Use `get_symbol_info` with the selected key. |
+| External definition | Use `view_external_definition`; source tools require source declarations. |
+| Interface or abstract implementations | Use `find_implementations` with the selected key. |
+| Overrides of a virtual or abstract member | Use `find_overrides` with the member key. |
+| Call sites or type dependencies | Use `find_callers`, or `get_type_dependencies` with a source type key. |
 
 Stop discovery when the location, cause, intended change, and validation are sufficient.
 Expand only to resolve a concrete uncertainty. A local body fix does not require a complete caller audit.

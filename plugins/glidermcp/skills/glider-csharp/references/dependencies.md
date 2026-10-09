@@ -24,6 +24,13 @@ Use `find_package_consolidation_candidates` to inspect version drift. It finds v
 If version alignment is requested, inspect compatibility and preview `consolidate_package_version` before applying a supported rewrite.
 Do not turn a dependency review into an unsolicited package upgrade.
 
+## Inspect type relationships
+
+Use `get_type_dependencies` with a source type key for declaration relationships and reverse references.
+The `uses` direction inspects base types, interfaces, fields, properties, method returns, and parameters.
+It omits method-body usages and filters most `System` types. The `used_by` direction follows symbol references.
+Do not treat either result as a complete dependency inventory. Inspect relevant bodies when the task needs implementation dependencies.
+
 ## Inspect project references
 
 Start with `get_project_graph` for direct edges, roots, leaves, transitive reachability, and cycles in the loaded workspace.

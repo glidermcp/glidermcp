@@ -27,6 +27,8 @@ For a move, inspect references the tool cannot update. Do not assume every refer
 4. Inspect whether the operation applied, whether the workspace updated, and which diagnostics the tool checked.
 
 For `replace_member`, obtain `replacementSpans` from `get_symbol_info`, then read the exact declaration with `get_file_contents`.
+When the schema advertises `get_source`, it can supply exact declaration text under the [source completeness conditions](discovery.md#read-source).
+Compare its declaration span with the replacement span, especially for shared fields and partial declarations.
 Exclude outer trivia from `expectedText` and `memberCode`. Select the declaration file when a partial member has several locations.
 Request raw source only for the exact window of an impending guarded operation.
 For `replace_range`, preserve `rawContent` whitespace and terminators in `expectedText`.

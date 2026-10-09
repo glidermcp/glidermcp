@@ -36,30 +36,28 @@ Select a path that fits the task. Read only the reference that applies.
 | Task | Minimum useful path |
 | --- | --- |
 | Known file and source range | Read that bounded range directly. Discover a key only when the operation needs identity. |
-| Unknown location or symbol | Start with `find_code`; select symbol, fileOutline, or literalText for the task. Inspect the selected match. |
+| Unknown location or symbol | Start with `find_code` and inspect the selected match. Use `search_text` for literal text or regex. |
 | Inheritance or call chain | Discover the exact symbol, then use hierarchy, references, or caller tools. |
 | Contract refactor | Read [editing.md](references/editing.md). Inspect impact, preview the refactor, and validate affected callers. |
 | External package API | Read [dependencies.md](references/dependencies.md). Inspect the selected assembly through `view_external_definition`. |
 | Dependency audit | Read [dependencies.md](references/dependencies.md). Check usage, assets, graph coverage, and non-source requirements. |
 | Diff review | Read [review.md](references/review.md). Select the baseline, inspect the diff, and assess relevant symbol impact. |
 
-`find_code` supports several search routes. Select the route instead of relying on the shape of the query.
+The consolidated discovery contract is unreleased. Use it only when the installed schema advertises `get_source` and `find_code.matchMode`.
+Otherwise, follow [the released-contract fallback](references/discovery.md#released-contract-fallback). Do not infer support from this skill alone.
 
-- `auto` and `symbol` search symbol names. Plain text matches name fragments without case sensitivity; `*` and `?` match whole names.
-- `fileOutline` accepts an exact path, a loaded C# filename, or a symbol name. It does not support file globs.
-- `literalText` searches loaded documents for literal text. It does not interpret regex.
-- For a .NET regular expression, use `search_text` with `query` and `useRegex=true`.
-- `references`, `implementations`, `callers`, and `hierarchy` resolve a symbol name before the selected operation.
-
-`auto` searches symbols only; it does not detect filenames or text patterns. Choose among candidates when names are ambiguous.
-Use `search_symbols` directly when namespace, accessibility, or sort controls are needed.
+With the consolidated contract, `find_code` accepts `symbol` (default) and `fileOutline`.
+The default `matchMode=closest` selects the first nonempty exact, prefix, or substring tier after scope and filters.
+Use `matchMode=all` for broad exploration. Namespace, accessibility, kind, scope, sort, and page controls remain available.
+Use direct relationship tools after selecting a key. Use `get_structure` for a known file and `search_text` for text or regex.
+Read [discovery and source](references/discovery.md) for migration, partial declarations, source bounds, and exact-edit conditions.
 For file patterns or files outside the loaded workspace, use Scout according to repository policy.
 
 Choose the next operation from the task, not from a fixed checklist:
 
 | Needed evidence | Next operation |
 | --- | --- |
-| Source method or type | Pass the selected key unchanged to `get_method_source` or `get_type_source`. |
+| Source declaration | With the consolidated contract, pass the selected key unchanged to `get_source`. Use the fallback reference for earlier servers. |
 | Nearby source context | When a source path exists, read `filePath` with a bounded range around `lineNumber` through `get_file_contents`. |
 | Declaration details or additional locations | Use `get_symbol_info` with the selected key. |
 | External definition | Use `view_external_definition`; source tools require source declarations. |

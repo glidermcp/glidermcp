@@ -29,6 +29,22 @@ The watched directory does not authorize file access. A successful read does not
 Agents connected to the same server share its loaded workspace. Coordinate root changes with other users, or use separate server instances.
 A separate Git worktree alone does not isolate the server.
 
+## Native license status in development builds
+
+Unreleased builds with native sandbox activation add a sanitized `license` object to the existing status tool.
+Check installed schemas and CLI help before using this behavior. Native deployment and released availability remain open.
+Sandbox `valid` describes the grant; `commercialRights` remains false. Account login alone establishes no production commercial rights.
+Status reads local state without a network request. Never request or publish credentials, complete grants, or profile contents.
+
+Glider and GliderTrace share one profile for the OS user. Login and logout affect both products that select that profile.
+Use browser login only when the user requests activation. MCP startup never opens a browser or requests input.
+A valid grant works offline through its paid period. Renewal cannot extend that period without a new verified grant.
+Follow `action` for recovery. If `revocationPending` is true, repeat logout after service and credential access recover.
+
+The credential vault is the default. Current macOS app signatures can prevent access from the other product.
+Windows and Linux native vault checks remain open. File storage requires the user's explicit selection during login.
+Do not silently change the credential store or weaken OS security settings.
+
 ## Discover and read code
 
 Select a path that fits the task. Read only the reference that applies.

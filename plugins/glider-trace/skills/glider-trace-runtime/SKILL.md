@@ -20,6 +20,22 @@ Runtime workspace registration requires server support and explicit user intent 
 Coordinate workspace changes with other users of the server. A worktree alone does not isolate shared resources.
 Repeat status after a restart or suspected scope mismatch, rather than before every call.
 
+## Native license status in development builds
+
+Unreleased builds with native sandbox activation add a sanitized `license` object to the existing status tool.
+Check installed schemas and CLI help before using this behavior. Native deployment and released availability remain open.
+Sandbox `valid` describes the grant; `commercialRights` remains false. Account login alone establishes no production commercial rights.
+Status reads local state without a network request. Never request or publish credentials, complete grants, or profile contents.
+
+Glider and GliderTrace share one profile for the OS user. Login and logout affect both products that select that profile.
+Use browser login only when the user requests activation. MCP startup never opens a browser or requests input.
+A valid grant works offline through its paid period. Renewal cannot extend that period without a new verified grant.
+Follow `action` for recovery. If `revocationPending` is true, repeat logout after service and credential access recover.
+
+The credential vault is the default. Current macOS app signatures can prevent access from the other product.
+Windows and Linux native vault checks remain open. File storage requires the user's explicit selection during login.
+Do not silently change the credential store or weaken OS security settings.
+
 ## Select the operation
 
 | Task | Tools | Guidance |

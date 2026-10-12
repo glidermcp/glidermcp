@@ -2,12 +2,14 @@
 
 ## Contract gate
 
-The consolidated contract is unreleased. Use this section only when the installed schema advertises `get_source` and `find_code.matchMode`.
+Glider 13.0.0 provides the consolidated contract. Use this section when the installed schema advertises `get_source` and `find_code.matchMode`.
 Otherwise, use the released-contract fallback below. Installed tool schemas remain authoritative.
 
 ## Select a symbol or file
 
-`find_code` defaults to `intent=symbol` and `matchMode=closest`.
+`find_code` requires `query`, not `name`. It defaults to `intent=symbol` and `matchMode=closest`.
+`kinds` accepts a comma-separated string, such as `"Type,Method"`, not an array.
+`matchMode` accepts only `closest` and `all`. `closest` reports the selected tier; it does not require an exact match.
 It selects the first nonempty exact, prefix, or substring tier after scope, namespace, accessibility, and kind filters.
 Inspect ambiguous candidates and choose the intended key. A name match does not identify an overload by itself.
 `matchMode=all` retains broad matches. `*` and `?` match whole symbol names; regex belongs in `search_text`.
@@ -50,6 +52,33 @@ A shared-field key returns one `VariableDeclarator`; a single-variable field ret
 Use the declared replacement span when the source span does not match the intended edit.
 Canonical root checks precede pagination. Use the containing solution for source outside the loaded root.
 
+## Outgoing-call evidence
+
+The following extensions remain unreleased. Use them only when the installed `get_outgoing_calls` schema advertises `includeCallSites`.
+The published 13.0.0 contract has no caller-span option. Use bounded source reads with that package.
+
+Outgoing rows preserve the constructed target identity and `typeArguments`.
+`definition.symbolKey` identifies its source declaration; pass that key to source or declaration tools.
+`definition.span` locates the declaration. A null definition means no source declaration is available.
+Local callable rows have null keys and `symbolKeyUnavailableReason=localCallable`; use their source coordinates instead.
+
+Set `includeCallSites=true` when invocation locations answer the question or help select a source window.
+The default is false. Each target has an independent window with `callSiteSkip=0` and `callSiteTake=30` by default.
+`callSiteTake` accepts 1 through 100. Target `skip` and `take` remain separate.
+Follow each `callSitePaging.nextSkip` with the same traversal arguments and target page.
+A response-size cut can shorten a window. Follow its `guidance` if zero returned sites prevent progress.
+
+Each site has a caller identity, file, project, depth, and exact invocation span.
+Lines and UTF-16 columns are one-based; span ends are exclusive.
+Traversal includes nested lambdas and local functions. `attribution=analyzedMethod` names the analyzed method, not a separately addressable nested callable.
+`containingCallableKind` identifies the enclosing callable kind.
+Coordinates locate syntax; read source to establish branch conditions or execution behavior.
+
+Check `collectionCoverage.complete`, count-floor fields, and both page sets before claiming complete coverage.
+Collection covers lexical method bodies, with a limit of 250 analyzed methods.
+Timeouts, the expansion limit, skipped bodies, or unresolved invocations make the collection incomplete.
+An exhausted page cannot repair incomplete collection. Unresolved invocation candidates do not establish a target.
+
 ## Migration
 
 | Earlier call | Consolidated call |
@@ -63,6 +92,9 @@ Canonical root checks precede pagination. Use the containing solution for source
 | `find_code` with `literalText` | `search_text` |
 
 Rediscover constructor keys after updating to the consolidated contract. Pass the newly returned key unchanged.
+
+Unreleased builds remove the duplicate `find_code.result.hints` field. Read hints only at the response root.
+This is a breaking result-field removal. Earlier packages can contain both copies; hints remain optional guidance.
 
 Move the former `projectName` into project scope. Replace `sourceOnly=false` with external scope.
 Replace `maxCandidates` with `take`; the discovery default is 50.

@@ -59,7 +59,7 @@ Select a path that fits the task. Read only the reference that applies.
 | Dependency audit | Read [dependencies.md](references/dependencies.md). Check usage, assets, graph coverage, and non-source requirements. |
 | Diff review | Read [review.md](references/review.md). Select the baseline, inspect the diff, and assess relevant symbol impact. |
 
-The consolidated discovery contract is unreleased. Use it only when the installed schema advertises `get_source` and `find_code.matchMode`.
+Glider 13.0.0 provides the consolidated discovery contract. Check that the installed schema advertises `get_source` and `find_code.matchMode`.
 Otherwise, follow [the released-contract fallback](references/discovery.md#released-contract-fallback). Do not infer support from this skill alone.
 
 With the consolidated contract, `find_code` accepts `symbol` (default) and `fileOutline`.
@@ -79,11 +79,17 @@ Choose the next operation from the task, not from a fixed checklist:
 | External definition | Use `view_external_definition`; source tools require source declarations. |
 | Interface or abstract implementations | Use `find_implementations` with the selected key. |
 | Overrides of a virtual or abstract member | Use `find_overrides` with the member key. |
-| Call sites or type dependencies | Use `find_callers`, or `get_type_dependencies` with a source type key. |
+| Incoming calls or type dependencies | Use `find_callers`, or `get_type_dependencies` with a source type key. |
+| Outgoing targets and invocation locations | Use `get_outgoing_calls`. Check [discovery and source](references/discovery.md#outgoing-call-evidence) for optional call-site support. |
 
-Stop discovery when the location, cause, intended change, and validation are sufficient.
-Expand only to resolve a concrete uncertainty. A local body fix does not require a complete caller audit.
+Stop discovery when the evidence answers the task’s questions or supports the intended change and its validation.
+Expand only to resolve a concrete uncertainty or satisfy required coverage. A local body fix does not require a complete caller audit.
 A contract or cross-project change requires the relevant callers, implementations, external definitions, and configuration coverage.
+
+Reuse source and relationship results when their scope, completeness, and freshness answer the current question.
+Refresh evidence after workspace changes or when freshness is uncertain.
+Semantic tools resolve identity and relationships. Read bounded source for behavior and conditions absent from those results.
+Expand overloads or related members when required coverage or a specific ambiguity warrants it.
 
 Pass returned `symbolKey` values unchanged to compatible tools. Keys are opaque, not permanent names.
 Discover new keys after a worktree, signature, or project change, or when a tool reports a stale key.

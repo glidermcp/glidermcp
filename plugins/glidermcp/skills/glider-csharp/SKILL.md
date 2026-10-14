@@ -57,7 +57,9 @@ Keep production and sandbox in separate directories. Glider and GliderTrace shar
 Follow `action` for recovery. If `revocationPending` is true, repeat logout after service and credential access recover.
 
 A valid grant works offline through its signed paid-period end, without daily renewal or a vault read.
-It permits an expired package to start. An expired grant requires successful bounded renewal or a package update.
+Only a valid production commercial grant permits an expired package to start.
+A trusted expired production grant requires successful bounded renewal, or the package needs an update.
+Sandbox grants do not bypass package age.
 Renewal cannot extend the paid period without a new verified grant. MCP startup never opens a browser or requests input.
 
 The credential vault is the default. Current macOS app signatures can prevent access from the other product.

@@ -38,6 +38,8 @@ Supply `audit.packageIds` and exact `audit.contexts` when the requested scope is
 Each context contains `projectPath`, `targetFramework`, `configuration`, and `runtimeIdentifier`.
 An empty RID selects portable evaluation. Null leaves the requested RID unspecified; inspect `evaluatedContext`.
 Omitted contexts request discovery; inspect `contextScope` and `contextDiscoveryComplete` before treating that scope as complete.
+An audit accepts at most 100 package IDs, 100 contexts, and 2000 package-context rows, including discovered contexts.
+Pagination does not expand these limits. Split larger audits into smaller requests with explicit contexts.
 Keep `audit` separate from the singular `packageId`, `packageVersion`, and `projectName` selectors.
 
 ```json
@@ -57,7 +59,12 @@ Keep `audit` separate from the singular `packageId`, `packageVersion`, and `proj
 ```
 
 The default `evaluateProjects=false` reads passive evidence conservatively. It cannot establish absence from unevaluated declarations.
+The loader does not retain the actual evaluated configuration and RID, so passive selected workspace inputs remain unknown.
+Explicit global properties do not prove correspondence: imports can override them with `TreatAsLocalProperty`.
+A default configuration or output path also does not establish correspondence.
+
 Explicit `evaluateProjects=true` queries MSBuild properties and items. It can load project imports but runs no targets or restore.
+Use an exact context for separate evaluated-item evidence when passive workspace inputs remain unknown.
 Compare requested contexts with `evaluatedContext`, `restoreCorrespondence`, provenance, and project/assets hashes.
 `evaluatedDeclaration` records a manifest fact separately from resolved package presence. A direct declaration alone does not prove resolution.
 Partial restore evidence or an unverified project-reference graph keeps presence unknown when correspondence cannot be established.

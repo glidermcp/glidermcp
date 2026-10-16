@@ -14,8 +14,8 @@ Do not request a token in chat or copy credentials into documents or logs.
 ## Inspect before selecting or changing data
 
 Call `describe` for the installed capabilities and limits. Use `list_spaces` to discover the intended space ID.
-Published 0.1.0-alpha.3 has one Personal space. The unreleased `1.0-draft.k5.1` contract adds workspaces and `get_space`/`put_space`.
-The unreleased `1.0-draft.k5.2` contract adds `delete_space` and get_space.snapshotRevision.
+Published 0.1.0-alpha.3 has one Personal space. Version 0.1.0-alpha.4 adds workspaces and `get_space`/`put_space`.
+Its `1.0-draft.k5.2` contract adds `delete_space` and get_space.snapshotRevision.
 Use these tools only when the installed schemas advertise them. Workspaces retain the `spaceId` argument.
 Select by the task's scope; do not assume the first listed space is correct. `isDefault` identifies the default workspace.
 
@@ -79,8 +79,9 @@ Creating and then deleting an empty workspace does not make the store pristine a
 Workspace deletion leaves exports and backups unchanged.
 Import adopts the source workspace as the destination default and retains local authority. It does not merge workspaces.
 An operator validates a file import before applying it. Do not replace a live shared store as ordinary note maintenance.
-The unreleased workspace build upgrades schema 5 on first open, including offline commands. Back up before that open.
-Published alpha.3 cannot open the upgraded store. Do not start or upgrade a shared server as ordinary note maintenance.
+Version 0.1.0-alpha.4 upgrades schema 5 to schema 6 on first open, including offline commands. Back up before that open.
+Version 0.1.0-alpha.3 cannot open the upgraded store.
+Rollback requires the complete backup from before the upgrade and the previous executable. Do not start or upgrade a shared server as ordinary note maintenance.
 Keep rejects other unsupported store layouts and legacy `knowledge.db` directories; preserve those files rather than attempting a conversion.
 
 Read the [tool reference](https://github.com/glidermcp/keep/blob/main/tools.md) for exact HTTP, import, model, and backup procedures.

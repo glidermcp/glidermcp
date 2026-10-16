@@ -15,6 +15,7 @@ Do not request a token in chat or copy credentials into documents or logs.
 
 Call `describe` for the installed capabilities and limits. Use `list_spaces` to discover the intended space ID.
 Published 0.1.0-alpha.3 has one Personal space. The unreleased `1.0-draft.k5.1` contract adds workspaces and `get_space`/`put_space`.
+The unreleased `1.0-draft.k5.2` contract adds `delete_space` and get_space.snapshotRevision.
 Use these tools only when the installed schemas advertise them. Workspaces retain the `spaceId` argument.
 Select by the task's scope; do not assume the first listed space is correct. `isDefault` identifies the default workspace.
 
@@ -33,7 +34,17 @@ For a server with workspace support, use `get_space` before a metadata change.
 Create or replace through `put_space` with a stable key, definition, revision precondition, and fresh requestId.
 The definition requires title and accepts an IANA defaultTimeZone. Preserve the current time zone when changing only the title.
 An omitted defaultTimeZone becomes `UTC`, including on replacement. Follow the same revision-conflict and ambiguous-response procedure below.
-Do not infer a workspace move, deletion, or default-selection tool from this contract; those operations remain unsupported.
+Workspace moves and default selection remain unsupported.
+
+For authorized workspace deletion, read `get_space` and inspect its metadata and content. Default remains protected even after a title change.
+Use `delete_space` only when its schema is advertised. Supply both current revisions as ifRevision and ifSnapshotRevision, with a fresh requestId.
+Cascade defaults to false. Any collection, including an empty or archived collection, or retained content requires explicit `cascade: true`.
+Supply cascade only when the task authorizes deletion of all workspace content, including history and saved views.
+
+After revision_conflict, read and inspect the workspace again before a new request with a new requestId.
+After a lost response, retry the original payload and requestId, including both original revision preconditions.
+Management retries return historical receipts after deletion and restart; they never restore the workspace or content.
+An old creation receipt does not prove the workspace still exists. Reusing its key in a fresh creation produces a new ID.
 
 Hybrid readiness and budgets apply per workspace in this contract.
 After a retryable hybrid failure, call `describe` with the same spaceId. Omission selects the default workspace.
@@ -61,9 +72,11 @@ A successful write confirms persistence in this store; it does not confirm a bac
 Use `export_space` only for an authorized small transfer. Exported content can include private information.
 For a complete store backup, an operator stops Keep before copying the complete store directory.
 `keep export --output <file>` exports one space. In the workspace contract, `--space-id <uuid>` selects another; omission selects Default.
-New export profiles preserve workspace metadata and data-write retries, but omit workspace keys, permissions, and `put_space` retry receipts.
+New export profiles preserve workspace metadata and data-write retries, but omit workspace keys, permissions, and workspace management retry receipts.
 
 Import requires a pristine whole store; an empty workspace in an existing store is insufficient.
+Creating and then deleting an empty workspace does not make the store pristine again.
+Workspace deletion leaves exports and backups unchanged.
 Import adopts the source workspace as the destination default and retains local authority. It does not merge workspaces.
 An operator validates a file import before applying it. Do not replace a live shared store as ordinary note maintenance.
 The unreleased workspace build upgrades schema 5 on first open, including offline commands. Back up before that open.

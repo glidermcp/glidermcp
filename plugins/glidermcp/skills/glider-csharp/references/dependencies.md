@@ -24,6 +24,58 @@ Use `find_package_consolidation_candidates` to inspect version drift. It finds v
 If version alignment is requested, inspect compatibility and preview `consolidate_package_version` before applying a supported rewrite.
 Do not turn a dependency review into an unsolicited package upgrade.
 
+## Audit package and asset evidence
+
+For a dependency matrix, identify the requested packages, projects, target frameworks, configurations, and runtime identifiers first.
+Reconcile every requested cell with the final report, whichever tools supply the evidence.
+Report each cell as `direct`, `transitive`, `absent`, or `unknown`, with its evidence and limits.
+A missing row is not evidence of absence. A package file is not evidence that a project selects or executes it.
+
+**UNRELEASED:** Use `find_package_usages.audit` only when the installed schema advertises it.
+Released Glider 13.1.1 retains the single-package semantic workflow above. Use project, restore, and build evidence to assemble other required facts.
+
+Supply `audit.packageIds` and exact `audit.contexts` when the requested scope is known.
+Each context contains `projectPath`, `targetFramework`, `configuration`, and `runtimeIdentifier`.
+An empty RID selects portable evaluation. Null leaves the requested RID unspecified; inspect `evaluatedContext`.
+Omitted contexts request discovery; inspect `contextScope` and `contextDiscoveryComplete` before treating that scope as complete.
+Keep `audit` separate from the singular `packageId`, `packageVersion`, and `projectName` selectors.
+
+```json
+{
+  "audit": {
+    "packageIds": ["Example.Widget"],
+    "contexts": [{
+      "projectPath": "src/App/App.csproj",
+      "targetFramework": "net10.0",
+      "configuration": "Release",
+      "runtimeIdentifier": ""
+    }],
+    "evaluateProjects": true,
+    "includeAssetPaths": true
+  }
+}
+```
+
+The default `evaluateProjects=false` reads passive evidence conservatively. It cannot establish absence from unevaluated declarations.
+Explicit `evaluateProjects=true` queries MSBuild properties and items. It can load project imports but runs no targets or restore.
+Compare requested contexts with `evaluatedContext`, `restoreCorrespondence`, provenance, and project/assets hashes.
+`evaluatedDeclaration` records a manifest fact separately from resolved package presence. A direct declaration alone does not prove resolution.
+Partial restore evidence or an unverified project-reference graph keeps presence unknown when correspondence cannot be established.
+Restore for the intended context when authorized if evidence is missing or stale. Then reload and repeat the audit.
+
+- `availableAssets` describes package assets available in restore evidence.
+- `targetAssets` describes assets for the selected restore target.
+- `selectedInputs` describes evaluated input roles only where evidence establishes them.
+- `execution` remains unknown. Selection does not establish that a compiler, analyzer, generator, target, or runtime executed an asset.
+
+The default `includeAssetPaths=false` returns counts and provenance with null paths. Null paths do not mean zero assets.
+Set it to true when the full path lists answer a task question.
+Check `requestedRows`, `coveredRows`, `skippedRows`, `presenceComplete`, `selectedInputsComplete`, and `pageComplete` separately.
+Follow the returned continuation selector unchanged, including its `snapshotId`. Restart pagination if the snapshot changes.
+A complete page does not establish complete presence or selected-input evidence.
+Target-generated, native, or runtime evidence can remain unavailable. Report those limits without endless retries once the requested questions have supported answers.
+Neither complete presence coverage nor zero C# usages establishes safe package removal.
+
 ## Inspect type relationships
 
 Use `get_type_dependencies` with a source type key for declaration relationships and reverse references.

@@ -25,6 +25,10 @@ This route rejects symbol filters, sorting, `matchMode=all`, and external scope.
 Use `get_structure` directly for a known file and its outline controls.
 
 Pass the selected `symbolKey` unchanged to relationship tools. Avoid another name search when the key already identifies the target.
+Use `find_implementations` for interface or abstract declarations, `get_type_hierarchy` for concrete types, and `find_overrides` for eligible virtual members.
+UNRELEASED builds return `unsupported_symbol` with retry hints for unsupported implementation targets.
+Follow the applicable hint. Released 13.1.1 callers can select the appropriate relationship tool directly.
+If discovery arguments fail, use `query`, a CSV `kinds` string, and the installed schema. Do not repeat the same invalid arguments.
 Use `get_symbol_info` for signatures and declaration details. Use `view_external_definition` for external source.
 Use `search_text` for literal text, or set `useRegex=true` for a .NET regular expression.
 

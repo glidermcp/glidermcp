@@ -11,7 +11,9 @@ If a tool is unavailable, state the limitation and choose an available alternati
 ## Verify the workspace
 
 A project configuration can preload a solution with `--solution`. The portable plugin leaves the solution choice to the agent.
-Call `server_status` before the first Glider operation in a task. Compare `solutionPath` and `solutionRoot` with the intended checkout.
+Call `server_status` before the first Glider operation in a task. Compare `solutionPath` with the intended solution.
+For a loaded project, `solutionPath` can be null. Check `cache.loadedKind=project` and compare `cache.loadedPath` with the intended project.
+Check `solutionRoot` for the scope of relative paths. Confirm that the load is complete before semantic operations.
 A loaded workspace can belong to another worktree. Changing the shell directory does not change Glider's workspace.
 
 - If nothing is loaded, call `load` with the relevant absolute `.sln`, `.slnx`, or `.csproj` path.
@@ -70,7 +72,8 @@ The file store uses OS-user permissions, without vault encryption. Do not silent
 
 ## Discover and read code
 
-Select a path that fits the task. Read only the reference that applies.
+Select tools that answer the task. Glider is optional; bounded file reads and ordinary Git commands can provide sufficient evidence.
+Read only the reference that applies. Check scope, freshness, and completeness whichever tools you choose.
 
 | Task | Minimum useful path |
 | --- | --- |
@@ -140,7 +143,8 @@ Clean diagnostics do not establish correct behavior or a successful build.
 
 ## Review changes
 
-Read [review.md](references/review.md) for code reviews. Combine the Git diff with `changed_symbols`, impact analysis, and relevant tests.
+Read [review.md](references/review.md) for code reviews. Use `changed_symbols` and impact analysis when they resolve a review question.
+Keep the Git diff and relevant tests as evidence. Stop investigation when task questions and required coverage are satisfied.
 Choose the comparison baseline explicitly. Review deleted code, configuration, and behavior even when semantic results contain no current symbol.
 For package APIs, dependency cleanup, or project architecture, read [dependencies.md](references/dependencies.md).
 

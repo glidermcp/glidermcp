@@ -29,11 +29,12 @@ The watched directory does not authorize file access. A successful read does not
 Agents connected to the same server share its loaded workspace. Coordinate root changes with other users, or use separate server instances.
 A separate Git worktree alone does not isolate the server.
 
-## Native license status in development builds
+## Native license status
 
-Compatible unreleased builds add a sanitized `license` object to the existing status tool.
+Glider 13.2.0 supports native licenses and a sanitized `license` object in the existing status tool.
 Verify the installed build's schemas and CLI help before using this behavior.
-This guidance establishes neither published package support nor public checkout or general activation availability.
+Activation requires an eligible paid account, an assigned developer seat, and current account and activation-service availability.
+Published package support does not establish that public sales are open.
 Status reads local state without a network request. Never request or publish credentials, complete grants, or profile contents.
 
 Production is the default for the CLI and MCP startup. Unknown environment values are rejected.

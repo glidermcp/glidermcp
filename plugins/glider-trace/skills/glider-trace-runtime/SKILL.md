@@ -20,11 +20,12 @@ Runtime workspace registration requires server support and explicit user intent 
 Coordinate workspace changes with other users of the server. A worktree alone does not isolate shared resources.
 Repeat status after a restart or suspected scope mismatch, rather than before every call.
 
-## Native license status in development builds
+## Native license status
 
-Compatible unreleased builds add a sanitized `license` object to the existing status tool.
+GliderTrace 1.4.0 supports native licenses and a sanitized `license` object in the existing status tool.
 Verify the installed build's schemas and CLI help before using this behavior.
-This guidance establishes neither published package support nor public checkout or general activation availability.
+Activation requires an eligible paid account, an assigned developer seat, and current account and activation-service availability.
+Published package support does not establish that public sales are open.
 Status reads local state without a network request. Never request or publish credentials, complete grants, or profile contents.
 
 Production is the default for the CLI and MCP startup. Unknown environment values are rejected.

@@ -23,14 +23,13 @@ Missing or stale restore assets limit the evidence. Restore with the intended co
 Glider 13.1.0 can report false absence when a project uses a custom assets path.
 For that version, compare the evaluated assets with assembly-level usage evidence. Treat conflicting results as incomplete evidence.
 
-The following coverage contract is unreleased. Use it only when the installed tool returns `assetsCoverage`.
+Glider 13.1.1 and later provide the following coverage contract. Inspect `assetsCoverage` in the installed tool result.
 The tool uses the evaluated `ProjectAssetsFile` captured during workspace load. Reload after changes to project properties or restore state.
 Inspect `assetsCoverage.complete` and each reported project's status and path before accepting an absence result.
 Missing, unreadable, malformed, or unresolved assets can yield `foundPackage: null` and `packagePresence: unknown`.
 Restore the affected projects with the intended configuration, then reload and retry. An ambiguous version requires a version selector.
 Coverage lists at most 25 projects, with failures first. If the list is truncated, narrow the request with `projectName`.
 A package without compile assemblies can still be present. Zero source usages do not establish that its other assets are unnecessary.
-
 
 Use `find_package_consolidation_candidates` to inspect version drift. It finds version alignment candidates, not unused packages.
 If version alignment is requested, inspect compatibility and preview `consolidate_package_version` before applying a supported rewrite.

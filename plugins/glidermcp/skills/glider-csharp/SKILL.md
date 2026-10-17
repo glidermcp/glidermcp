@@ -8,6 +8,10 @@ description: Use GliderMCP to navigate, edit, diagnose, refactor, and review C#/
 Use this skill for C#/.NET work when Glider is connected. Follow the installed server's instructions and tool schemas for supported arguments.
 If a tool is unavailable, state the limitation and choose an available alternative. This skill does not install or configure servers.
 
+Some clients defer connected tools. When a task needs semantic evidence, check the client's catalog for unlisted Glider tools.
+In Codex code mode, list matching names before inspecting one tool's definition.
+Read [deferred tools](references/discovery.md#deferred-tools) when the client exposes deferred tools.
+
 ## Verify the workspace
 
 A project configuration can preload a solution with `--solution`. The portable plugin leaves the solution choice to the agent.

@@ -1,5 +1,28 @@
 # Discovery and source
 
+## Deferred tools
+
+A client can omit connected Glider tools from its initial visible list.
+Use the client's discovery route when a task needs semantic evidence.
+An omitted tool name does not establish that the server is unavailable.
+
+Codex code mode can expose deferred tools through `tools` and `ALL_TOOLS` inside `functions.exec`.
+When these globals exist, list Glider tool names first:
+
+```javascript
+text(ALL_TOOLS.filter(tool => tool.name.startsWith("mcp__glider__")).map(tool => tool.name));
+```
+
+Then inspect the definition for the relevant operation. For example:
+
+```javascript
+text(ALL_TOOLS.find(tool => tool.name === "mcp__glider__find_code"));
+```
+
+A broad catalog output can repeat server instructions for each tool and exhaust the response budget.
+Keep broad discovery to names. Read only the definitions needed for the task.
+Use the discovered schema for calls. Other clients can provide a tool search or a direct tool list instead.
+
 ## Contract gate
 
 Glider 13.0.0 provides the consolidated contract. Use this section when the installed schema advertises `get_source` and `find_code.matchMode`.

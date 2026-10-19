@@ -19,8 +19,8 @@ Its `1.0-draft.k5.2` contract adds `delete_space` and get_space.snapshotRevision
 Use these tools only when the installed schemas advertise them. Workspaces retain the `spaceId` argument.
 Select by the task's scope; do not assume the first listed space is correct. `isDefault` identifies the default workspace.
 
-Existing collections remain in Default after the upgrade, with their previous space ID, document IDs, history, and retry records.
-In published alpha.4, every workspace shares the owner's full-access token. Scoped access requires the unreleased contract described below.
+A schema 5 upgrade keeps existing collections in Default, with their previous space ID, document IDs, history, and retry records.
+A schema 6 upgrade preserves workspace assignments. Alpha.5 adds the scoped access contract below.
 Inspect collections and documents with `list_collections` and `list_documents` before creating duplicate structures.
 Use `search` for discovery and `get_document` for the full current document.
 Full-text search works without a model. Semantic search requires operator opt-in and can download a local model.
@@ -47,12 +47,12 @@ Management retries return historical receipts after deletion and restart; they n
 An old creation receipt does not prove the workspace still exists. Reusing its key in a fresh creation produces a new ID.
 
 Hybrid readiness and budgets apply per workspace in this contract.
-After a retryable hybrid failure, call `describe` with the same spaceId. In alpha.4, omission selects Default.
+After a retryable hybrid failure, call `describe` with the same spaceId. With scoped access, omission selects an accessible workspace.
 An evicted index reports `index_evicted`; describe or hybrid search requests its rebuild. Retry when readiness returns, or use lexical search.
 
-## Scoped access (unreleased)
+## Scoped access
 
-Contract `1.0-draft.k5.3` adds scoped credentials, eight administration tools, and schema 7. Published alpha.4 does not include them.
+Keep 0.1.0-alpha.5 uses contract `1.0-draft.k5.3`, with scoped credentials, eight administration tools, and schema 7.
 Use these workflows only when the installed schemas advertise them. Personal stdio and the configured owner token retain full authority.
 Select from `list_spaces`; scoped credentials expose only authorized workspaces and effective permissions.
 `describe` can return null defaultSpaceId or no selected workspace. Do not assume Default is accessible.
@@ -72,9 +72,10 @@ Generation grants no authority. Register only tokenSha256 with explicit workspac
 The digest hashes the 64 ASCII hexadecimal secret characters without a newline.
 Rotation uses a new credential ID, absent precondition, replacesCredentialId, and the old credential's ifReplacesRevision.
 A stale rotation leaves the old credential valid. Revoked IDs cannot become active again.
-Use the [access reference](https://github.com/glidermcp/keep/blob/main/tools.md#access-administration-unreleased) for exact administration arguments.
+Use the [access reference](https://github.com/glidermcp/keep/blob/main/tools.md#access-administration) for exact administration arguments.
 
 After accepted revocation, later operations fail; an operation already executing can finish before that commit.
+Restart preserves access state, including expiry and revocation. Documents have no anonymous or public access.
 Cursors bind to principal, credential, and authorization revision. Restart an expired cursor under current authority.
 Content retries survive credential rotation for the same principal, but require current authorization before replay.
 Audit covers successful mutations only. Reads, denials, and retries add no event; audit contains neither content nor secrets.
@@ -102,7 +103,7 @@ Use `export_space` only for an authorized small transfer. Exported content can i
 For a complete store backup, an operator stops Keep before copying the complete store directory.
 `keep export --output <file>` exports one space. In the workspace contract, `--space-id <uuid>` selects another; omission selects Default.
 Alpha.4 export profiles preserve workspace metadata and data-write retries, but omit workspace keys, permissions, and workspace management retry receipts.
-Unreleased organization profiles use inline format 5 (`organization-content-v1`) or file format 6 (`organization-file-content-v1`).
+Alpha.5 organization profiles use inline format 5 (`organization-content-v1`) or file format 6 (`organization-file-content-v1`).
 Keep selects them when operational receipts or local actor identities involve other principals. They retain content, history, identities, and actor provenance.
 They exclude operational receipts and security/audit records; results report coverage `content` and operationalReceipts `excluded`.
 Legacy profiles report coverage `complete` and operationalReceipts `included`. Neither is a complete operational backup.
@@ -112,9 +113,8 @@ Creating and then deleting an empty workspace does not make the store pristine a
 Workspace deletion leaves exports and backups unchanged.
 Import adopts the source workspace as the destination default and retains local authority. It does not merge workspaces.
 An operator validates a file import before applying it. Do not replace a live shared store as ordinary note maintenance.
-Version 0.1.0-alpha.4 upgrades schema 5 to schema 6 on first open, including offline commands. Back up before that open.
-Version 0.1.0-alpha.3 cannot open the upgraded store.
-The unreleased k5.3 build upgrades schema 5 or 6 to schema 7, including offline commands. Alpha.4 cannot open schema 7.
+Alpha.5 upgrades schema 5 or 6 to schema 7 on first open, including offline commands.
+Alpha.4 and earlier cannot open schema 7.
 Back up before the first open. A stopped-store backup preserves grants, credential digests, audit, and operational receipts.
 Local access metadata alone permits pristine import; imported actors never grant authority.
 Rollback requires the complete backup from before the upgrade and the previous executable. Do not start or upgrade a shared server as ordinary note maintenance.

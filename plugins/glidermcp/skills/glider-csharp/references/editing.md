@@ -12,8 +12,8 @@ Use the narrowest supported operation that expresses the intended change. Inspec
 | Replace one member declaration | `replace_member` | Obtain its key and exact current declaration text. |
 | Change or delete an exact source range | `replace_range` | Read raw source and preserve the expected text exactly. |
 | Create or rewrite a C# file | `write_file` | Read existing content when applicable and verify the destination. |
-| Remove unnecessary usings and sort the remainder | `organize_usings` | Select the document and project context. Preview the diff. |
-| Normalize a C# document's layout | `format_document` | Preview document-wide changes before applying them. |
+| Remove unnecessary usings and sort the remainder | `organize_usings` | Select the document and project context. |
+| Normalize a C# document's layout | `format_document` | Check the intended document-wide scope. |
 
 Glider's C# write tools do not replace file tools for project files or other languages.
 For a move, inspect references the tool cannot update. Do not assume every reference form or partial declaration is supported.
@@ -22,9 +22,30 @@ For a move, inspect references the tool cannot update. Do not assume every refer
 
 1. Inspect the code and tests that explain the change. Inspect callers for a contract change.
    Use `analyze_change_impact` before a rename or move. Expand a local fix only for a concrete uncertainty.
-2. Set `applyChanges: false` when supported and inspect the proposed diff. Do not assume writes default to preview.
-3. Apply the intended change after the preview is acceptable. A preview does not reserve the source against concurrent edits.
-4. Inspect whether the operation applied, whether the workspace updated, and which diagnostics the tool checked.
+2. Apply an authorized, unambiguous edit directly when its scope is clear. The eleven edit tools default to `applyChanges: true`.
+3. Use `applyChanges: false` for inspection-only requests, unclear scope, or broad refactors that need inspection before application.
+   This preview writes no files. Inspect the proposed diff before the corresponding application.
+   A preview does not reserve the source against concurrent edits.
+4. Inspect application state, workspace updates, diagnostics, errors, warnings, conflicts, and scope limits before continuing.
+
+Request one diff representation when the next decision needs the changed text.
+Use `includePerFileDiff: false` where supported to retain one unified diff with the file list and counts.
+Use `includeDiff: false` when the next decision does not need the changed text.
+After a preview, retain one application diff.
+An exception requires a freshness guard that verifies all relevant previewed source, or a comparison of reread applied files with the preview.
+Also set `includePerFileDiff: false` where supported for a result without diff text.
+
+The flags preserve the other result fields, including application state and any errors, diagnostics, conflicts, or limits the tool reports.
+Inspect those fields even when the operation reports success.
+Set `includePerFileDiff: true` only when separate file diffs are needed. It works independently of `includeDiff`.
+
+**Unreleased:** Development builds after 13.4.0 default `includePerFileDiff` to false.
+Released 13.4.0 defaults it to true on `rename_symbol`, `move_type`, `move_member`, `add_member`, `add_type`, and `consolidate_package_version`.
+Set it explicitly to false on those tools for one unified diff, or set both flags false for compact output.
+Development builds also add this parameter to `write_file`, `organize_usings`, and `format_document`.
+Pass it to these three tools only when the installed schema advertises it.
+On earlier builds, their existing `includeDiff: false` suppresses both diff representations.
+Follow the installed schema for supported parameters and defaults; this skill alone does not establish availability.
 
 For `replace_member`, obtain `replacementSpans` from `get_symbol_info`, then read the exact declaration with `get_file_contents`.
 When the schema advertises `get_source`, it can supply exact declaration text under the [source completeness conditions](discovery.md#read-source).
@@ -46,7 +67,7 @@ Likewise, an omitted response does not mean a completed write should be repeated
 
 Use `organize_usings` after an edit or refactor when imports need cleanup. It removes unnecessary usings and sorts the remainder.
 Use `format_document` when the edited document needs formatting. Formatting and import cleanup are separate operations.
-Preview each with `applyChanges: false`, inspect the diff, then apply the accepted operation.
+Apply the preview criteria above. An authorized cleanup with a clear scope can apply directly.
 Keep cleanup within the task scope. Document-wide formatting can include unrelated lines; do not expand a small fix into repository-wide cleanup.
 For linked files, select the relevant project context and check other affected configurations before accepting import removal.
 Respect repository style rules and inspect the result rather than assuming a formatter establishes every style requirement.

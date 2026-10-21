@@ -84,7 +84,7 @@ Read only the reference that applies. Check scope, freshness, and completeness w
 | Known file and source range | Read that bounded range directly. Discover a key only when the operation needs identity. |
 | Unknown location or symbol | Start with `find_code` and inspect the selected match. Use `search_text` for literal text or regex. |
 | Inheritance or call chain | Discover the exact symbol, then use hierarchy, references, or caller tools. |
-| Contract refactor | Read [editing.md](references/editing.md). Inspect impact, preview the refactor, and validate affected callers. |
+| Contract refactor | Read [editing.md](references/editing.md). Inspect impact, choose preview or direct application for the scope, and validate affected callers. |
 | External package API | Read [dependencies.md](references/dependencies.md). Inspect the selected assembly through `view_external_definition`. |
 | Dependency audit | Read [dependencies.md](references/dependencies.md). Check usage, assets, graph coverage, and non-source requirements. |
 | Diff review | Read [review.md](references/review.md). Select the baseline, inspect the diff, and assess relevant symbol impact. |

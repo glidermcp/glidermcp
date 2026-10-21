@@ -32,7 +32,8 @@ Coverage lists at most 25 projects, with failures first. If the list is truncate
 A package without compile assemblies can still be present. Zero source usages do not establish that its other assets are unnecessary.
 
 Use `find_package_consolidation_candidates` to inspect version drift. It finds version alignment candidates, not unused packages.
-If version alignment is requested, inspect compatibility and preview `consolidate_package_version` before applying a supported rewrite.
+For requested version alignment, inspect compatibility and select a supported rewrite with `consolidate_package_version`.
+Apply directly when the authorized scope is clear and unambiguous. Otherwise, use the [preview criteria](editing.md#preview-apply-and-inspect).
 Do not turn a dependency review into an unsolicited package upgrade.
 
 ## Audit package and asset evidence

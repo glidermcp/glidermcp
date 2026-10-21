@@ -52,7 +52,7 @@ An evicted index reports `index_evicted`; describe or hybrid search requests its
 
 ## Pass a record to another agent
 
-Record links require the unreleased `1.0-draft.k5.4` contract. Published alpha.5 does not expose these tools.
+Keep 0.1.0-alpha.6 provides record links through contract `1.0-draft.k5.4`. Alpha.5 does not expose these tools.
 Use this workflow only when the installed schemas advertise `get_document_link` and `resolve_document_link`.
 After selecting the intended document, call `get_document_link` with spaceId and documentId.
 Omit revision for a live reference that follows edits. Supply a revision from `document_history` when the handoff needs exact historical evidence.
@@ -71,7 +71,7 @@ Stored same-space relations in a document's links field remain separate from the
 
 ## Scoped access
 
-Keep 0.1.0-alpha.5 uses contract `1.0-draft.k5.3`, with scoped credentials, eight administration tools, and schema 7.
+Alpha.5 (`1.0-draft.k5.3`) and alpha.6 (`1.0-draft.k5.4`) provide scoped credentials, eight administration tools, and schema 7.
 Use these workflows only when the installed schemas advertise them. Personal stdio and the configured owner token retain full authority.
 Select from `list_spaces`; scoped credentials expose only authorized workspaces and effective permissions.
 `describe` can return null defaultSpaceId or no selected workspace. Do not assume Default is accessible.

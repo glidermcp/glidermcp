@@ -93,6 +93,35 @@ These tools do not create missing measurements. A parser gap or empty sample lis
 A source position or method match does not establish matching binaries, PDBs, or source revisions.
 Follow `nextCursor` with the same session and kinds when the result supplies it.
 
+### Recover text exception relationships
+
+Unreleased builds can expose `source` and `exceptionRelation` on recognized text exceptions.
+Check the installed server instructions and returned fields before relying on this contract.
+The package version alone does not establish support; published 1.4.0 lacks these fields.
+Missing fields in older sessions mean unknown provenance. Use retained artifacts when structured evidence cannot answer the task.
+
+Explicit inner-exception markers establish supported linear chains. `chainId` identifies a chain; `parentEvidenceId` identifies the enclosing exception.
+`chainIndex` starts at zero. `parsedChainLength` counts recognized headers; `rootKnown` identifies a recognized outer header.
+Neither field proves complete capture or recognition. Independent failures remain separate.
+AggregateException branches and arbitrary multiline message continuations remain unsupported.
+
+`source.sourceId` identifies one text input within the session. Treat the identifier as opaque.
+`source.line` and `source.column` use one-based lines and UTF-16 columns within that source.
+Use these positions for order within one `sourceId`, even when raw text is unretained.
+They establish neither source-code identity nor runtime chronology across inputs. Source IDs establish no identity across sessions.
+
+`source.rawArtifactUri` identifies retained raw text, or is null when no copy remains.
+A known source ID with null raw URI means unretained text; older records without source IDs retain unknown identity.
+The event `artifactUri` can identify normalized storage. Do not use it as raw text when `source.rawArtifactUri` is absent.
+Chain relationships and source positions remain usable without a retained raw copy.
+`source.timestampBasis` is `ingestion` for imported text or `collection` for captured command output.
+Neither basis establishes original event time. Group `timestampBasis` can also be `unknown` or `mixed`.
+
+Groups retain at most three samples; `samplesTruncated` identifies omitted occurrences. Group rank does not establish source order.
+Filters, pages, group limits, and ingestion caps can exclude related exceptions. Parent IDs can refer outside the response or stored capture.
+Read `coverage`, query without filters, and follow `nextCursor` to recover available related events.
+Complete ingestion does not establish complete parsing; complete samples do not establish a complete chain.
+
 ## Retain, compare, and share
 
 Find previous sessions with `trace_list_sessions`. Label filters match the whole label; follow the returned cursor.

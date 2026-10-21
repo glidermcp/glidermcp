@@ -50,6 +50,25 @@ Hybrid readiness and budgets apply per workspace in this contract.
 After a retryable hybrid failure, call `describe` with the same spaceId. With scoped access, omission selects an accessible workspace.
 An evicted index reports `index_evicted`; describe or hybrid search requests its rebuild. Retry when readiness returns, or use lexical search.
 
+## Pass a record to another agent
+
+Record links require the unreleased `1.0-draft.k5.4` contract. Published alpha.5 does not expose these tools.
+Use this workflow only when the installed schemas advertise `get_document_link` and `resolve_document_link`.
+After selecting the intended document, call `get_document_link` with spaceId and documentId.
+Omit revision for a live reference that follows edits. Supply a revision from `document_history` when the handoff needs exact historical evidence.
+Copy the returned uri unchanged. The result uses revision null for a live link; omit revision in the request instead of sending null.
+
+Resolve a received URI through `resolve_document_link` on a trusted, already configured connection to the same Keep store.
+The URI identifies a store, workspace, document, and optional revision. It supplies no endpoint and grants no authority.
+Do not open a network connection or fetch a URL from it. A browser route is not part of this contract.
+The result is the full current or pinned document, subject to existing access checks. Records remain private by default.
+A foreign store, missing record, or inaccessible workspace returns not_found; this does not establish absence.
+If the connection is wrong, ask for the intended existing connection. Do not rewrite the store ID or obtain owner access to bypass denial.
+
+Restart and full-store backup restoration preserve link identity. Workspace import retains the destination store identity; generate new links there.
+Deletion removes both current and historical content, so neither form of link can recover a deleted record.
+Stored same-space relations in a document's links field remain separate from these record URIs.
+
 ## Scoped access
 
 Keep 0.1.0-alpha.5 uses contract `1.0-draft.k5.3`, with scoped credentials, eight administration tools, and schema 7.

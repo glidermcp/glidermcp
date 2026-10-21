@@ -30,8 +30,11 @@ For a move, inspect references the tool cannot update. Do not assume every refer
 
 Request one diff representation when the next decision needs the changed text.
 Use `includePerFileDiff: false` where supported to retain one unified diff with the file list and counts.
-Use `includeDiff: false` when no diff is needed, such as application after an accepted preview.
+Use `includeDiff: false` when the next decision does not need the changed text.
+After a preview, retain one application diff.
+An exception requires a freshness guard that verifies all relevant previewed source, or a comparison of reread applied files with the preview.
 Also set `includePerFileDiff: false` where supported for a result without diff text.
+
 The flags preserve the other result fields, including application state and any errors, diagnostics, conflicts, or limits the tool reports.
 Inspect those fields even when the operation reports success.
 Set `includePerFileDiff: true` only when separate file diffs are needed. It works independently of `includeDiff`.

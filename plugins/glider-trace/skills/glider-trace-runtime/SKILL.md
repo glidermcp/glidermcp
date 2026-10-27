@@ -1,12 +1,26 @@
 ---
 name: glider-trace-runtime
-description: Use GliderTrace to run .NET commands, diagnose builds and tests, capture process evidence, and inspect stored sessions and artifacts.
+description: Use GliderTrace to analyze existing .NET logs, repeated exceptions, and recovery or retry outcomes, run .NET builds and tests, and inspect captured evidence.
 ---
 
 # GliderTrace runtime evidence
 
-Use this skill when GliderTrace is connected and the task needs .NET execution or runtime evidence.
+Use this skill when GliderTrace is connected and the task needs existing-log analysis, .NET execution, or runtime evidence.
 Follow the installed server instructions and schemas. Capabilities and runner options differ across versions and hosts.
+
+## Analyze an existing .NET log
+
+Import the existing source with `trace_import_artifacts` when stored analysis can answer the task. Keep `sessionId` and read coverage.
+Choose the next tool by the question:
+
+- Repeated failures: `trace_exceptions` gives groups, counts, cause samples, and source-position bounds when supported.
+- Recovery, deferred retries, and correlations: `trace_query_log` finds INFO context that normalized events omit.
+- Individual chains: `trace_query_events` gives frames and parent links. Follow `nextCursor` for omitted detail.
+
+For raw context, pass a returned `source.sourceId` or registered log artifact URI, narrow `text`, and follow `nextStartLine`.
+Check the installed schemas: `trace_query_log` and expanded source bounds belong to unreleased large-log builds.
+Released 1.4.1 does not expose `trace_query_log`. Use another authorized reader when retained evidence cannot answer the task.
+Raw-source queries through MCP remain raw evidence, distinct from exception summaries.
 
 ## Check the workspace and capabilities
 
@@ -117,10 +131,21 @@ Chain relationships and source positions remain usable without a retained raw co
 `source.timestampBasis` is `ingestion` for imported text or `collection` for captured command output.
 Neither basis establishes original event time. Group `timestampBasis` can also be `unknown` or `mixed`.
 
-Groups retain at most three samples; `samplesTruncated` identifies omitted occurrences. Group rank does not establish source order.
+Earlier builds retain at most three samples per group. Group rank does not establish source order.
+Unreleased large-log builds expose `sampleLimit`: one sample by default, with values from zero to three.
+Check the installed schema; released 1.4.1 lacks this parameter and `trace_query_log`.
+`samplesTruncated` identifies omitted occurrences. Use `trace_query_events` for omitted members and full event detail.
+`sourceRanges` gives per-source position bounds and counts; `chainCount` counts distinct known chains among stored matching events.
+These summaries do not count unobserved failures. Missing optional sample metadata means unavailable, not a negative finding.
 Filters, pages, group limits, and ingestion caps can exclude related exceptions. Parent IDs can refer outside the response or stored capture.
 Read `coverage`, query without filters, and follow `nextCursor` to recover available related events.
 Complete ingestion does not establish complete parsing; complete samples do not establish a complete chain.
+
+When available, `trace_query_log` retrieves retained raw context that normalized events omit, such as informational outcomes.
+Use a returned source ID or an exact registered log artifact URI. Follow `nextStartLine` with the same source and filter.
+`scannedThroughLine` can include a lookahead match beyond the returned page. Continue from `nextStartLine` to retain that match.
+This is raw-source evidence through MCP. Read search completeness and warnings separately from ingestion coverage.
+Use the original source when retained evidence cannot answer the task. Read [capture.md](references/capture.md) for import and query limits.
 
 ## Retain, compare, and share
 

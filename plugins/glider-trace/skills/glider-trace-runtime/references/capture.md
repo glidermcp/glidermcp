@@ -44,6 +44,24 @@ Use `trace_import_artifacts` for supported TRX, binlog, log, counters, nettrace,
 Use `trace_import_otlp` for bounded OpenTelemetry JSON or NDJSON from a trusted workspace file.
 Check the installed schema for sensitivity acknowledgment and supported formats. Imported raw files can contain private values.
 
+Unreleased large-log builds expose `maxTextBytes`: 16 MiB by default, with a 64 MiB maximum per text source.
+Released 1.4.1 lacks this parameter. Check the installed schema before use.
+Normalization also bounds lines, line length, exception nodes, and stored events. Inspect coverage and warnings for omitted evidence.
+Invalid UTF-8 uses replacement characters and reports an encoding gap. Complete ingestion does not establish complete parsing.
+
+When available, `trace_query_log` searches redacted retained raw lines, including context beyond normalized events.
+Select `sourceId` from an event, or an exact registered log, stdout, or stderr artifact URI in the session.
+Arbitrary paths are unsupported. An absent retained copy requires another authorized source reader.
+The optional text filter is case-insensitive and applies after redaction. It accepts at most 512 characters.
+Use one-based `startLine`; follow `nextStartLine` with the same source and filter.
+`limitLines` defaults to 50 and accepts 1..100. Responses also have a 12000-character text budget.
+
+Search scans at most 64 MiB. It omits lines over 16384 characters before search and projection.
+It also omits incomplete lines at the byte cap.
+Unfiltered pages retain an omission placeholder. Invalid UTF-8 uses replacement characters.
+Read `searchComplete`, `sourceTruncated`, and warnings separately from `ingestCoverage`; an empty result with gaps cannot establish absence.
+Returned line positions describe the raw source. This tool supplies raw-source evidence, not additional normalized events.
+
 ETL attribution requires the selected PID and a verified start time, or explicit uncertainty when supported.
 For copied GliderTrace ETL, retain the original capture session ID and start time so the importer can verify identity and hash.
 Uncertain events remain unattributed. Importing a file does not guarantee decoded stack, heap, or exception evidence.

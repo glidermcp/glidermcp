@@ -44,6 +44,27 @@ Use `trace_import_artifacts` for supported TRX, binlog, log, counters, nettrace,
 Use `trace_import_otlp` for bounded OpenTelemetry JSON or NDJSON from a trusted workspace file.
 Check the installed schema for sensitivity acknowledgment and supported formats. Imported raw files can contain private values.
 
+Unreleased runtime exception builds normalize CLR `Exception/Start` events when EventPipe capture finishes or a nettrace file is imported.
+Check returned `runtimeSource` and `coverage.analysis` fields; a local package version alone does not establish support.
+`trace_run` and `trace_start` require `collectTrace` for this evidence. `trace_stop` completes analysis for a started command.
+Use existing stored events for repeated queries; import a retained trace when its older session has no decode record.
+
+Read `coverage.capture` separately from each `runtimeExceptions` entry in `coverage.analysis`.
+Analysis entries identify the source and artifact, status, observed/stored event counts, and gaps.
+Status is `complete`, `partial`, or `unavailable`. Null `observedEvents` means unknown; a partial count covers only observed events.
+The aggregate `coverage.complete` is false when capture or analysis has gaps.
+
+Complete decode covers supported CLR throws in the retained artifact. It proves neither provider coverage nor complete process history.
+A throw alone establishes no catch status, unhandled failure, termination, or inner-exception relationship.
+
+Exception decode accepts source traces up to 128 MiB. Conversion has a 500000-event limit.
+It rejects converted files above 256 MiB after conversion; this is not a peak disk or memory guarantee.
+Live capture stores at most 1000 throws per artifact. Import shares its `maxEvents` budget across sources, up to 5000 events.
+Each throw retains at most 32 frames, 1024 characters per type or frame, and 4096 message characters.
+
+A separate budget of 4194304 characters bounds retained exception payloads. These limits can omit throws or shorten detail.
+Read analysis gaps for event loss, incomplete conversion, missing stacks, payload limits, or decode failure.
+
 Unreleased large-log builds expose `maxTextBytes`: 16 MiB by default, with a 64 MiB maximum per text source.
 Released 1.4.1 lacks this parameter. Check the installed schema before use.
 Normalization also bounds lines, line length, exception nodes, and stored events. Inspect coverage and warnings for omitted evidence.

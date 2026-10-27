@@ -95,8 +95,14 @@ Commands can restore packages, create build outputs, and run application side ef
 
 `success` describes the tool call. Read `status`, `exitCode`, and any test verdict for the actual execution outcome.
 Results are compact JSON fields beside `success`. Do not invent a `responseDetail` or format parameter for ordinary reads.
-Read `coverage` and warnings. Incomplete capture prevents an absence claim even when no matching events appear.
+Read `coverage` and warnings. Capture or analysis gaps prevent an absence claim when no matching events appear.
 Output summaries and result pages can omit detail without changing capture coverage.
+
+Unreleased runtime exception builds expose `coverage.capture` and per-artifact `coverage.analysis`; `coverage.complete` remains the conservative aggregate.
+Check returned fields and server instructions. A package version alone does not establish support.
+Each `runtimeExceptions` analysis reports `complete`, `partial`, or `unavailable`, observed/stored counts, and gaps.
+A null `observedEvents` means unknown. Older nettrace sessions without decode records report unavailable analysis.
+Complete analysis describes CLR throws within the retained artifact. It establishes neither provider coverage nor complete process history.
 
 Use `trace_get_session` for stored status, findings, and artifacts. Use `trace_query_events` for filtered evidence and follow its cursor.
 Follow an `outputLimit` read-only next call when present. Do not repeat a command or capture to recover omitted response text.
@@ -106,6 +112,20 @@ These tools do not create missing measurements. A parser gap or empty sample lis
 `trace_correlate_code` gives candidates in the current checkout. Read `correlationBasis` and `sourceIdentity` for each frame.
 A source position or method match does not establish matching binaries, PDBs, or source revisions.
 Follow `nextCursor` with the same session and kinds when the result supplies it.
+
+### Inspect runtime exception events
+
+Unreleased runtime exception builds normalize CLR `Exception/Start` events from EventPipe capture and nettrace import.
+Use `trace_exceptions` for groups and `trace_query_events` for individual throws. Read [capture.md](references/capture.md) for bounds.
+`exceptionType`, `message`, and available frames describe the throw. Missing stacks remain an explicit analysis gap.
+
+`runtimeSource` preserves the source PID, thread, event index, provider, event name, and artifact identity.
+Its `timestampBasis` is `runtime`; the event timestamp describes the runtime event.
+Use `runtimeSource.rawArtifactUri` for the retained trace and treat `sourceId` as opaque.
+
+These events carry no text `exceptionRelation`. A throw alone establishes no catch status, unhandled failure, termination, or inner-exception relationship.
+Zero observed throws with complete analysis describes only the retained artifact and supported event kind.
+Inspect analysis gaps before interpreting absent exceptions. Reuse retained artifacts when another authorized reader can resolve an analysis gap.
 
 ### Recover text exception relationships
 

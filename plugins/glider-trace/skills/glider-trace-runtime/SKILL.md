@@ -18,8 +18,8 @@ Choose the next tool by the question:
 - Individual chains: `trace_query_events` gives frames and parent links. Follow `nextCursor` for omitted detail.
 
 For raw context, pass a returned `source.sourceId` or registered log artifact URI, narrow `text`, and follow `nextStartLine`.
-Check the installed schemas: `trace_query_log` and expanded source bounds belong to unreleased large-log builds.
-Released 1.4.1 does not expose `trace_query_log`. Use another authorized reader when retained evidence cannot answer the task.
+GliderTrace 2.0.1 adds `trace_query_log` and expanded source bounds. Check the installed schemas on older servers.
+Versions before 2.0.1 do not expose `trace_query_log`. Use another authorized reader when retained evidence cannot answer the task.
 Raw-source queries through MCP remain raw evidence, distinct from exception summaries.
 
 ## Check the workspace and capabilities
@@ -98,8 +98,8 @@ Results are compact JSON fields beside `success`. Do not invent a `responseDetai
 Read `coverage` and warnings. Capture or analysis gaps prevent an absence claim when no matching events appear.
 Output summaries and result pages can omit detail without changing capture coverage.
 
-Unreleased runtime exception builds expose `coverage.capture` and per-artifact `coverage.analysis`; `coverage.complete` remains the conservative aggregate.
-Check returned fields and server instructions. A package version alone does not establish support.
+GliderTrace 2.0.1 and later expose `coverage.capture` and per-artifact `coverage.analysis`; `coverage.complete` remains the conservative aggregate.
+Check returned fields and server instructions. Older sessions can lack decode records.
 Each `runtimeExceptions` analysis reports `complete`, `partial`, or `unavailable`, observed/stored counts, and gaps.
 A null `observedEvents` means unknown. Older nettrace sessions without decode records report unavailable analysis.
 Complete analysis describes CLR throws within the retained artifact. It establishes neither provider coverage nor complete process history.
@@ -115,7 +115,7 @@ Follow `nextCursor` with the same session and kinds when the result supplies it.
 
 ### Inspect runtime exception events
 
-Unreleased runtime exception builds normalize CLR `Exception/Start` events from EventPipe capture and nettrace import.
+GliderTrace 2.0.1 and later normalize CLR `Exception/Start` events from EventPipe capture and nettrace import.
 Use `trace_exceptions` for groups and `trace_query_events` for individual throws. Read [capture.md](references/capture.md) for bounds.
 `exceptionType`, `message`, and available frames describe the throw. Missing stacks remain an explicit analysis gap.
 
@@ -129,9 +129,9 @@ Inspect analysis gaps before interpreting absent exceptions. Reuse retained arti
 
 ### Recover text exception relationships
 
-Unreleased builds can expose `source` and `exceptionRelation` on recognized text exceptions.
+GliderTrace 1.4.1 and later expose `source` and `exceptionRelation` on recognized text exceptions.
 Check the installed server instructions and returned fields before relying on this contract.
-The package version alone does not establish support; published 1.4.0 lacks these fields.
+Versions before 1.4.1 lack these fields. Older stored sessions can also lack them.
 Missing fields in older sessions mean unknown provenance. Use retained artifacts when structured evidence cannot answer the task.
 
 Explicit inner-exception markers establish supported linear chains. `chainId` identifies a chain; `parentEvidenceId` identifies the enclosing exception.
@@ -152,8 +152,8 @@ Chain relationships and source positions remain usable without a retained raw co
 Neither basis establishes original event time. Group `timestampBasis` can also be `unknown` or `mixed`.
 
 Earlier builds retain at most three samples per group. Group rank does not establish source order.
-Unreleased large-log builds expose `sampleLimit`: one sample by default, with values from zero to three.
-Check the installed schema; released 1.4.1 lacks this parameter and `trace_query_log`.
+GliderTrace 2.0.1 and later expose `sampleLimit`: one sample by default, with values from zero to three.
+Check the installed schema; versions before 2.0.1 lack this parameter and `trace_query_log`.
 `samplesTruncated` identifies omitted occurrences. Use `trace_query_events` for omitted members and full event detail.
 `sourceRanges` gives per-source position bounds and counts; `chainCount` counts distinct known chains among stored matching events.
 These summaries do not count unobserved failures. Missing optional sample metadata means unavailable, not a negative finding.

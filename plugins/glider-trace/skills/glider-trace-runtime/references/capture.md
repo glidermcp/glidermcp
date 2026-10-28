@@ -44,8 +44,8 @@ Use `trace_import_artifacts` for supported TRX, binlog, log, counters, nettrace,
 Use `trace_import_otlp` for bounded OpenTelemetry JSON or NDJSON from a trusted workspace file.
 Check the installed schema for sensitivity acknowledgment and supported formats. Imported raw files can contain private values.
 
-Unreleased runtime exception builds normalize CLR `Exception/Start` events when EventPipe capture finishes or a nettrace file is imported.
-Check returned `runtimeSource` and `coverage.analysis` fields; a local package version alone does not establish support.
+GliderTrace 2.0.1 and later normalize CLR `Exception/Start` events when EventPipe capture finishes or a nettrace file is imported.
+Check returned `runtimeSource` and `coverage.analysis` fields. Older sessions can lack decode records.
 `trace_run` and `trace_start` require `collectTrace` for this evidence. `trace_stop` completes analysis for a started command.
 Use existing stored events for repeated queries; import a retained trace when its older session has no decode record.
 
@@ -65,8 +65,8 @@ Each throw retains at most 32 frames, 1024 characters per type or frame, and 409
 A separate budget of 4194304 characters bounds retained exception payloads. These limits can omit throws or shorten detail.
 Read analysis gaps for event loss, incomplete conversion, missing stacks, payload limits, or decode failure.
 
-Unreleased large-log builds expose `maxTextBytes`: 16 MiB by default, with a 64 MiB maximum per text source.
-Released 1.4.1 lacks this parameter. Check the installed schema before use.
+GliderTrace 2.0.1 and later expose `maxTextBytes`: 16 MiB by default, with a 64 MiB maximum per text source.
+Versions before 2.0.1 lack this parameter. Check the installed schema before use.
 Normalization also bounds lines, line length, exception nodes, and stored events. Inspect coverage and warnings for omitted evidence.
 Invalid UTF-8 uses replacement characters and reports an encoding gap. Complete ingestion does not establish complete parsing.
 

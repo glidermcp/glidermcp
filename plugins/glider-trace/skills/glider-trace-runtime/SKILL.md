@@ -1,12 +1,26 @@
 ---
 name: glider-trace-runtime
-description: Use GliderTrace to run .NET commands, diagnose builds and tests, capture process evidence, and inspect stored sessions and artifacts.
+description: Use GliderTrace to analyze existing .NET logs, repeated exceptions, and recovery or retry outcomes, run .NET builds and tests, and inspect captured evidence.
 ---
 
 # GliderTrace runtime evidence
 
-Use this skill when GliderTrace is connected and the task needs .NET execution or runtime evidence.
+Use this skill when GliderTrace is connected and the task needs existing-log analysis, .NET execution, or runtime evidence.
 Follow the installed server instructions and schemas. Capabilities and runner options differ across versions and hosts.
+
+## Analyze an existing .NET log
+
+Import the existing source with `trace_import_artifacts` when stored analysis can answer the task. Keep `sessionId` and read coverage.
+Choose the next tool by the question:
+
+- Repeated failures: `trace_exceptions` gives groups, counts, cause samples, and source-position bounds when supported.
+- Recovery, deferred retries, and correlations: `trace_query_log` finds INFO context that normalized events omit.
+- Individual chains: `trace_query_events` gives frames and parent links. Follow `nextCursor` for omitted detail.
+
+For raw context, pass a returned `source.sourceId` or registered log artifact URI, narrow `text`, and follow `nextStartLine`.
+GliderTrace 2.0.1 adds `trace_query_log` and expanded source bounds. Check the installed schemas on older servers.
+Versions before 2.0.1 do not expose `trace_query_log`. Use another authorized reader when retained evidence cannot answer the task.
+Raw-source queries through MCP remain raw evidence, distinct from exception summaries.
 
 ## Check the workspace and capabilities
 
@@ -81,8 +95,14 @@ Commands can restore packages, create build outputs, and run application side ef
 
 `success` describes the tool call. Read `status`, `exitCode`, and any test verdict for the actual execution outcome.
 Results are compact JSON fields beside `success`. Do not invent a `responseDetail` or format parameter for ordinary reads.
-Read `coverage` and warnings. Incomplete capture prevents an absence claim even when no matching events appear.
+Read `coverage` and warnings. Capture or analysis gaps prevent an absence claim when no matching events appear.
 Output summaries and result pages can omit detail without changing capture coverage.
+
+GliderTrace 2.0.1 and later expose `coverage.capture` and per-artifact `coverage.analysis`; `coverage.complete` remains the conservative aggregate.
+Check returned fields and server instructions. Older sessions can lack decode records.
+Each `runtimeExceptions` analysis reports `complete`, `partial`, or `unavailable`, observed/stored counts, and gaps.
+A null `observedEvents` means unknown. Older nettrace sessions without decode records report unavailable analysis.
+Complete analysis describes CLR throws within the retained artifact. It establishes neither provider coverage nor complete process history.
 
 Use `trace_get_session` for stored status, findings, and artifacts. Use `trace_query_events` for filtered evidence and follow its cursor.
 Follow an `outputLimit` read-only next call when present. Do not repeat a command or capture to recover omitted response text.
@@ -93,11 +113,25 @@ These tools do not create missing measurements. A parser gap or empty sample lis
 A source position or method match does not establish matching binaries, PDBs, or source revisions.
 Follow `nextCursor` with the same session and kinds when the result supplies it.
 
+### Inspect runtime exception events
+
+GliderTrace 2.0.1 and later normalize CLR `Exception/Start` events from EventPipe capture and nettrace import.
+Use `trace_exceptions` for groups and `trace_query_events` for individual throws. Read [capture.md](references/capture.md) for bounds.
+`exceptionType`, `message`, and available frames describe the throw. Missing stacks remain an explicit analysis gap.
+
+`runtimeSource` preserves the source PID, thread, event index, provider, event name, and artifact identity.
+Its `timestampBasis` is `runtime`; the event timestamp describes the runtime event.
+Use `runtimeSource.rawArtifactUri` for the retained trace and treat `sourceId` as opaque.
+
+These events carry no text `exceptionRelation`. A throw alone establishes no catch status, unhandled failure, termination, or inner-exception relationship.
+Zero observed throws with complete analysis describes only the retained artifact and supported event kind.
+Inspect analysis gaps before interpreting absent exceptions. Reuse retained artifacts when another authorized reader can resolve an analysis gap.
+
 ### Recover text exception relationships
 
-Unreleased builds can expose `source` and `exceptionRelation` on recognized text exceptions.
+GliderTrace 1.4.1 and later expose `source` and `exceptionRelation` on recognized text exceptions.
 Check the installed server instructions and returned fields before relying on this contract.
-The package version alone does not establish support; published 1.4.0 lacks these fields.
+Versions before 1.4.1 lack these fields. Older stored sessions can also lack them.
 Missing fields in older sessions mean unknown provenance. Use retained artifacts when structured evidence cannot answer the task.
 
 Explicit inner-exception markers establish supported linear chains. `chainId` identifies a chain; `parentEvidenceId` identifies the enclosing exception.
@@ -117,10 +151,21 @@ Chain relationships and source positions remain usable without a retained raw co
 `source.timestampBasis` is `ingestion` for imported text or `collection` for captured command output.
 Neither basis establishes original event time. Group `timestampBasis` can also be `unknown` or `mixed`.
 
-Groups retain at most three samples; `samplesTruncated` identifies omitted occurrences. Group rank does not establish source order.
+Earlier builds retain at most three samples per group. Group rank does not establish source order.
+GliderTrace 2.0.1 and later expose `sampleLimit`: one sample by default, with values from zero to three.
+Check the installed schema; versions before 2.0.1 lack this parameter and `trace_query_log`.
+`samplesTruncated` identifies omitted occurrences. Use `trace_query_events` for omitted members and full event detail.
+`sourceRanges` gives per-source position bounds and counts; `chainCount` counts distinct known chains among stored matching events.
+These summaries do not count unobserved failures. Missing optional sample metadata means unavailable, not a negative finding.
 Filters, pages, group limits, and ingestion caps can exclude related exceptions. Parent IDs can refer outside the response or stored capture.
 Read `coverage`, query without filters, and follow `nextCursor` to recover available related events.
 Complete ingestion does not establish complete parsing; complete samples do not establish a complete chain.
+
+When available, `trace_query_log` retrieves retained raw context that normalized events omit, such as informational outcomes.
+Use a returned source ID or an exact registered log artifact URI. Follow `nextStartLine` with the same source and filter.
+`scannedThroughLine` can include a lookahead match beyond the returned page. Continue from `nextStartLine` to retain that match.
+This is raw-source evidence through MCP. Read search completeness and warnings separately from ingestion coverage.
+Use the original source when retained evidence cannot answer the task. Read [capture.md](references/capture.md) for import and query limits.
 
 ## Retain, compare, and share
 

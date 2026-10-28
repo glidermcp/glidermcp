@@ -44,6 +44,45 @@ Use `trace_import_artifacts` for supported TRX, binlog, log, counters, nettrace,
 Use `trace_import_otlp` for bounded OpenTelemetry JSON or NDJSON from a trusted workspace file.
 Check the installed schema for sensitivity acknowledgment and supported formats. Imported raw files can contain private values.
 
+GliderTrace 2.0.1 and later normalize CLR `Exception/Start` events when EventPipe capture finishes or a nettrace file is imported.
+Check returned `runtimeSource` and `coverage.analysis` fields. Older sessions can lack decode records.
+`trace_run` and `trace_start` require `collectTrace` for this evidence. `trace_stop` completes analysis for a started command.
+Use existing stored events for repeated queries; import a retained trace when its older session has no decode record.
+
+Read `coverage.capture` separately from each `runtimeExceptions` entry in `coverage.analysis`.
+Analysis entries identify the source and artifact, status, observed/stored event counts, and gaps.
+Status is `complete`, `partial`, or `unavailable`. Null `observedEvents` means unknown; a partial count covers only observed events.
+The aggregate `coverage.complete` is false when capture or analysis has gaps.
+
+Complete decode covers supported CLR throws in the retained artifact. It proves neither provider coverage nor complete process history.
+A throw alone establishes no catch status, unhandled failure, termination, or inner-exception relationship.
+
+Exception decode accepts source traces up to 128 MiB. Conversion has a 500000-event limit.
+It rejects converted files above 256 MiB after conversion; this is not a peak disk or memory guarantee.
+Live capture stores at most 1000 throws per artifact. Import shares its `maxEvents` budget across sources, up to 5000 events.
+Each throw retains at most 32 frames, 1024 characters per type or frame, and 4096 message characters.
+
+A separate budget of 4194304 characters bounds retained exception payloads. These limits can omit throws or shorten detail.
+Read analysis gaps for event loss, incomplete conversion, missing stacks, payload limits, or decode failure.
+
+GliderTrace 2.0.1 and later expose `maxTextBytes`: 16 MiB by default, with a 64 MiB maximum per text source.
+Versions before 2.0.1 lack this parameter. Check the installed schema before use.
+Normalization also bounds lines, line length, exception nodes, and stored events. Inspect coverage and warnings for omitted evidence.
+Invalid UTF-8 uses replacement characters and reports an encoding gap. Complete ingestion does not establish complete parsing.
+
+When available, `trace_query_log` searches redacted retained raw lines, including context beyond normalized events.
+Select `sourceId` from an event, or an exact registered log, stdout, or stderr artifact URI in the session.
+Arbitrary paths are unsupported. An absent retained copy requires another authorized source reader.
+The optional text filter is case-insensitive and applies after redaction. It accepts at most 512 characters.
+Use one-based `startLine`; follow `nextStartLine` with the same source and filter.
+`limitLines` defaults to 50 and accepts 1..100. Responses also have a 12000-character text budget.
+
+Search scans at most 64 MiB. It omits lines over 16384 characters before search and projection.
+It also omits incomplete lines at the byte cap.
+Unfiltered pages retain an omission placeholder. Invalid UTF-8 uses replacement characters.
+Read `searchComplete`, `sourceTruncated`, and warnings separately from `ingestCoverage`; an empty result with gaps cannot establish absence.
+Returned line positions describe the raw source. This tool supplies raw-source evidence, not additional normalized events.
+
 ETL attribution requires the selected PID and a verified start time, or explicit uncertainty when supported.
 For copied GliderTrace ETL, retain the original capture session ID and start time so the importer can verify identity and hash.
 Uncertain events remain unattributed. Importing a file does not guarantee decoded stack, heap, or exception evidence.

@@ -48,6 +48,7 @@ GliderTrace 2.0.1 and later normalize CLR `Exception/Start` events when EventPip
 Check returned `runtimeSource` and `coverage.analysis` fields. Older sessions can lack decode records.
 `trace_run` and `trace_start` require `collectTrace` for this evidence. `trace_stop` completes analysis for a started command.
 Use existing stored events for repeated queries; import a retained trace when its older session has no decode record.
+Read [evidence](evidence.md) before selecting raw fallback or interpreting throw counts and handled status.
 
 Read `coverage.capture` separately from each `runtimeExceptions` entry in `coverage.analysis`.
 Analysis entries identify the source and artifact, status, observed/stored event counts, and gaps.

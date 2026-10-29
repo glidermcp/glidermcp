@@ -14,10 +14,10 @@ A shell directory change does not retarget the server. Relative paths use its pr
 Use an absolute target under a trusted root. Additional workspace trust requires explicit user intent and server support.
 Coordinate shared roots and sessions with other agents. Recheck status after a restart or suspected scope mismatch.
 
-Unreleased builds offer compact status with `includeDetails`. Check the installed schema before supplying this argument.
+GliderTrace 3.0.0 and later offer compact status with `includeDetails`. Check the installed schema before supplying this argument.
 Use the returned `next` call or `includeDetails: true` for full policies and local diagnostics.
 Use `includeEnvironment: true` for full status plus executable probes before selecting an unfamiliar runner or capture backend.
-Earlier versions already return full status by default and do not accept `includeDetails`.
+Versions before 3.0.0 return full status by default and do not accept `includeDetails`.
 Read [prerequisites](references/prerequisites.md) for dependencies, or [licensing](references/licensing.md) for activation and expiry recovery.
 
 ## Select the task path

@@ -8,7 +8,7 @@ Each returned sample includes its full stored stack, which can be incomplete bec
 `sampleLimit: 0` omits samples; increase it only when samples answer a missing question.
 `totalApprox` counts exception groups, not throws. `limit` limits groups, not occurrences.
 
-Unreleased builds add `matchedEventCount`, `groupsTruncated`, and a `details` query. Check returned fields before using them.
+GliderTrace 3.0.0 and later add `matchedEventCount`, `groupsTruncated`, and a `details` query. Check returned fields before using them.
 `matchedEventCount` counts all matching stored events before group and sample limits.
 `groupsTruncated` identifies groups omitted from this response. `samplesTruncated` identifies omitted occurrences within a group.
 The `details` query selects exception events and preserves the summary's text and severity filters.

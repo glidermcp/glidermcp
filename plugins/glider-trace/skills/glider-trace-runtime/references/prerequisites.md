@@ -1,7 +1,7 @@
 # External tools and prerequisites
 
 This map assumes a supported GliderTrace server is already running. Read the installed schemas and `trace_status` for version-specific support.
-Call `trace_status` with `includeEnvironment: true` to inspect local tool discovery and enabled runner policies.
+Start with compact status. If an executable or runner is unavailable, use `includeEnvironment: true` to inspect local tool discovery.
 This also returns full status on builds with a compact default.
 GliderTrace 3.0.0 and later expose `includeDetails: true` for full status without executable probes. Check the installed schema first.
 A found executable does not prove the selected process, target framework, adapter, or workspace is supported.

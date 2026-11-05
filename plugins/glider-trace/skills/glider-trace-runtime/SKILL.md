@@ -5,7 +5,8 @@ description: Use GliderTrace to analyze .NET logs and runtime exceptions, run bu
 
 # GliderTrace runtime evidence
 
-Follow the installed server instructions and schemas. Read only the reference needed for the current task.
+Discover tools by name. Inspect only the selected tool's arguments. In Code Mode, print its declaration when available.
+If the client exposes only a full schema, inspect that schema. Read a reference when a specific question remains.
 
 ## Establish the workspace
 
@@ -15,8 +16,8 @@ Use an absolute target under a trusted root. Additional workspace trust requires
 Coordinate shared roots and sessions with other agents. Recheck status after a restart or suspected scope mismatch.
 
 GliderTrace 3.0.0 and later offer compact status with `includeDetails`. Check the installed schema before supplying this argument.
-Use the returned `next` call or `includeDetails: true` for full policies and local diagnostics.
-Use `includeEnvironment: true` for full status plus executable probes before selecting an unfamiliar runner or capture backend.
+Start with empty status arguments. Request `includeDetails: true` to investigate a policy or capability problem.
+Request `includeEnvironment: true` when a missing executable or runner availability could explain a failure.
 Versions before 3.0.0 return full status by default and do not accept `includeDetails`.
 Read [prerequisites](references/prerequisites.md) for dependencies, or [licensing](references/licensing.md) for activation and expiry recovery.
 
@@ -29,11 +30,14 @@ Read [prerequisites](references/prerequisites.md) for dependencies, or [licensin
 | A particular exception or chain | Use `trace_query_events` with `kinds: ["exception"]`. Follow `nextCursor` with the same filters. |
 | INFO outcomes, retries, or correlations | Use `trace_query_log` for retained raw context. Follow `nextStartLine` with the same source and filter. |
 | Restore, build, test, or custom command | Read [execution](references/execution.md). Preserve the repository's target, arguments, configuration, and test verdict requirements. |
-| CPU hotspot or call path | Use `trace_hotspots` on a session with a runtime trace. Read [evidence](references/evidence.md) for `callPaths` and `cpuCoverage`. |
+| Live CoreCLR CPU hotspot or call path | Select the original process with `trace_list_processes`. Attach with its fresh target identity for the requested interval. Inspect `trace_hotspots` on that session. |
 | Other captures or artifact imports | Read [capture](references/capture.md) for dependencies, acknowledgments, target identity, and analysis limits. |
 | Stored sessions, comparisons, or source correlation | Read [evidence](references/evidence.md) for detail recovery, provenance, and comparison limits. |
 
 Keep the returned `sessionId`. Record the source revision, target, configuration, filters, and workload needed to interpret the result.
+For CPU evidence, read the returned frame order, caller links, leaf counts, sample denominator, and `cpuCoverage`.
+Use a complete matching path when it answers the question. Samples describe retained stacks, not exact CPU time.
+For a missing path or partial coverage, consult [CPU hotspots and call paths](references/evidence.md#interpret-cpu-hotspots-and-call-paths).
 GliderTrace 2.0.1 adds runtime throw analysis, `sampleLimit`, and `trace_query_log`. Check schemas and returned fields on older servers.
 Omitted event `kinds` includes all kinds; an initial page can contain process or artifact metadata instead of exceptions.
 
@@ -53,6 +57,6 @@ Use raw fallback for a concrete unresolved question, contradiction, or relevant 
 First verify that the reader supports the event kinds or fields needed to resolve that gap.
 A throw-only reader cannot answer whether exceptions were caught or supply catch or termination events.
 An explicit request for independent verification still requires that verification.
-Read [evidence](references/evidence.md) for counts, stacks, provenance, supported relationships, and fallback limits.
+Consult [evidence](references/evidence.md) when the returned counts, provenance, or fallback limits need clarification.
 
 Raw logs, traces, and dumps can contain private data. Local access or export does not authorize publication.

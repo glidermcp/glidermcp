@@ -1,6 +1,6 @@
 # Commands, builds, and tests
 
-Check `trace_status` with `includeEnvironment: true` before selecting a runner on an unfamiliar host.
+Use compact status for normal execution. Request `includeEnvironment: true` to diagnose an unavailable runner or executable.
 Use [prerequisites.md](prerequisites.md) for external dependencies. Availability also depends on executable policies and the repository's toolchain.
 
 ## Preserve the repository's command contract

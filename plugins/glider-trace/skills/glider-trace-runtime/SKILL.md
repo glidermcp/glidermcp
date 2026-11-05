@@ -29,6 +29,7 @@ Read [prerequisites](references/prerequisites.md) for dependencies, or [licensin
 | A particular exception or chain | Use `trace_query_events` with `kinds: ["exception"]`. Follow `nextCursor` with the same filters. |
 | INFO outcomes, retries, or correlations | Use `trace_query_log` for retained raw context. Follow `nextStartLine` with the same source and filter. |
 | Restore, build, test, or custom command | Read [execution](references/execution.md). Preserve the repository's target, arguments, configuration, and test verdict requirements. |
+| CPU hotspot or call path | Use `trace_hotspots` on a session with a runtime trace. Read [evidence](references/evidence.md) for `callPaths` and `cpuCoverage`. |
 | Other captures or artifact imports | Read [capture](references/capture.md) for dependencies, acknowledgments, target identity, and analysis limits. |
 | Stored sessions, comparisons, or source correlation | Read [evidence](references/evidence.md) for detail recovery, provenance, and comparison limits. |
 

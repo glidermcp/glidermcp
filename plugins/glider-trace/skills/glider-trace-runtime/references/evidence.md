@@ -70,6 +70,30 @@ These events carry no text `exceptionRelation`. A throw alone establishes no cat
 Zero observed throws with complete analysis describes only the retained artifact and supported event kind.
 Inspect analysis gaps before interpreting absent exceptions. Reuse retained artifacts when another authorized reader can resolve an analysis gap.
 
+### Interpret CPU hotspots and call paths
+
+Check the installed schema. Servers with `pathLimit` and `maxPathDepth` return `callPaths` and `cpuCoverage` beside flat rows.
+Older servers return flat rows only. Flat rows cannot establish caller edges; do not join them into a path.
+
+Each path is one observed sample stack. `frameOrder` is `rootToLeaf`: the first frame is the outermost listed caller.
+Recursion keeps repeated frames, and a callee with two callers appears in two paths.
+`callerLink` describes the edge from the previous frame: `direct`, `elided` (omitted runtime frames), or `depthLimit`.
+`none` marks the first listed frame. An `elided` edge is not a direct call.
+
+Percentages divide by `cpuCoverage.samplesWithStacks`, which equals `totalSamples`. The `text` filter does not change it.
+The sample profiler also samples waiting threads, so a percentage is a share of sampled thread stacks, not of CPU time.
+`inclusiveSamples` counts samples with the method anywhere on the stack. `exclusiveSamples` and path `leafSamples` count samples where it was the leaf.
+Path `samples` minus `leafSamples` ran in omitted runtime callees below the last listed frame.
+`callPaths.truncated`, `depthTruncated`, and `distinctStacks` report the applied path, depth, and merge limits.
+
+Read `cpuCoverage` for CPU analysis: `complete`, `partial`, `noSamples`, or `unavailable`.
+It reports `samplesMissingStacks` and `eventsLost` separately. `coverage.capture` describes capture completeness.
+A complete `runtimeExceptions` analysis is not CPU evidence. `noSamples` does not prove that the process used no CPU.
+
+Stop when the returned paths and coverage answer the question.
+Decode the retained trace only for missing stacks, partial or unavailable analysis, a truncated path you need, or a contradiction.
+Raise `pathLimit` or `maxPathDepth` first when a needed path is only truncated. Do not repeat the capture for that.
+
 ### Recover text exception relationships
 
 GliderTrace 1.4.1 and later expose `source` and `exceptionRelation` on recognized text exceptions.

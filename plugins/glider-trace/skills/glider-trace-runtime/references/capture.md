@@ -90,4 +90,5 @@ Uncertain events remain unattributed. Importing a file does not guarantee decode
 
 Inspect the import's coverage, warnings, artifact references, and normalized events before selecting an analysis tool.
 `trace_hotspots` summarizes captured CPU samples. `modulePath` identifies a binary; source paths require separate source evidence.
+Servers with the `pathLimit` parameter also return bounded ordered call paths. Read [evidence.md](evidence.md) before interpreting them.
 `trace_counters` needs counter data. `trace_exceptions` groups available exception evidence; it does not prove every exception was captured.

@@ -51,7 +51,7 @@ Current collector discovery excludes executable paths inside trusted workspace r
 | `trace_import_artifacts`, `trace_import_otlp` | No capture CLI needed to import existing files. Supported parsers are bundled. | Supported format, trusted file path, and sensitivity/identity fields where required. |
 | `trace_exceptions` | None. | Exception evidence already captured or imported. |
 | `trace_counters` | No `dotnet-counters` installation needed for an existing counters artifact. | Supported counter data in the session. |
-| `trace_hotspots` | No `dotnet-trace` installation needed for an existing trace artifact. Parser is bundled. | Captured CPU sample data and adequate parse coverage. |
+| `trace_hotspots` | No `dotnet-trace` installation needed for an existing trace artifact. Parser is bundled. | Captured CPU sample data and adequate parse coverage, reported by `cpuCoverage` where available. |
 | `trace_correlate_code` | Compatible SDK/MSBuild and resolvable project, package, and reference inputs. | Compiler services are bundled; no separate Glider MCP connection is needed. Source identity remains unverified. |
 | `send_feedback` | No diagnostic executable. | Enabled feedback endpoint and network access; installed privacy and publication rules apply. |
 

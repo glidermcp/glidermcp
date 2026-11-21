@@ -7,16 +7,16 @@ Use [prerequisites.md](prerequisites.md) for external dependencies. Availability
 
 Choose the intended solution or project explicitly when the root contains several targets.
 Keep the repository's required SDK, configuration, test framework, filters, properties, and working directory.
-For a custom argument set absent from a specialized tool, use `trace_run` with the supported executable and exact argument array.
-Do not replace required test arguments with a similar command merely to obtain structured output.
+Run tests with `trace_run_tests`; `trace_run` stores no test verdict, counts, or failure records.
+Use `trace_run` for tests only when the repository requires arguments that `trace_run_tests` cannot express, and report that the run has no structured verdict.
+`trace_import_artifacts` can import a TRX file that such a run wrote.
+For other argument sets absent from a specialized tool, use `trace_run` with the supported executable and exact argument array.
 
 ```json
-{"command":"dotnet","arguments":["test","--project","src/Example.Tests/Example.Tests.csproj"],"workingDirectory":"/absolute/trusted/checkout","label":"focused-tests"}
+{"command":"dotnet","arguments":["run","--project","src/Example.App/Example.App.csproj","--","--check"],"workingDirectory":"/absolute/trusted/checkout","label":"app-check"}
 ```
 
-This example applies only to a repository whose test mode supports `--project`.
-Microsoft.Testing.Platform and VSTest repositories can require different command forms. Follow the project's configuration.
-A custom run stores process evidence; it need not provide the structured test verdict of `trace_run_tests`.
+A custom run stores process evidence only.
 
 ## Choose runners and stages
 
@@ -26,6 +26,8 @@ A custom run stores process evidence; it need not provide the structured test ve
 - Use `trace_pipeline` when ordered restore, build, and test meet the requested validation. It stops at the first unsuccessful stage.
 
 Supply test assemblies for a VSTest runner. Do not infer that the server contains the project's adapters or targeting packs.
+`tests` selects exact fully qualified names with every runner from GliderTrace 3.2.0; with `dotnet-test` it needs VSTest mode, and Microsoft.Testing.Platform projects reject it.
+`framework` and `platform` with runner `vstest` need GliderTrace 3.2.1 or later.
 Runner names reserved in status are unavailable until the installed server supports them.
 Explicit stage runners let a supported pipeline combine NuGet, MSBuild, and native VSTest. Inspect its installed schema first.
 

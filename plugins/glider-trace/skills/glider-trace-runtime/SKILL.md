@@ -6,7 +6,8 @@ description: Use GliderTrace to analyze .NET logs and runtime exceptions, run bu
 # GliderTrace runtime evidence
 
 Discover tools by name. Inspect only the selected tool's arguments. In Code Mode, print its declaration when available.
-If the client exposes only a full schema, inspect that schema. Read a reference when a specific question remains.
+If the client exposes only a full schema, inspect that schema. The call shapes below cover common paths.
+Read a reference only when a specific question remains.
 
 ## Establish the workspace
 
@@ -15,10 +16,9 @@ A shell directory change does not retarget the server. Relative paths use its pr
 Use an absolute target under a trusted root. Additional workspace trust requires explicit user intent and server support.
 Coordinate shared roots and sessions with other agents. Recheck status after a restart or suspected scope mismatch.
 
-GliderTrace 3.0.0 and later offer compact status with `includeDetails`. Check the installed schema before supplying this argument.
 Start with empty status arguments. Request `includeDetails: true` to investigate a policy or capability problem.
 Request `includeEnvironment: true` when a missing executable or runner availability could explain a failure.
-Versions before 3.0.0 return full status by default and do not accept `includeDetails`.
+Servers before 3.0.0 return full status and reject `includeDetails`.
 Read [prerequisites](references/prerequisites.md) for dependencies, or [licensing](references/licensing.md) for activation and expiry recovery.
 
 ## Select the task path
@@ -28,8 +28,9 @@ Read [prerequisites](references/prerequisites.md) for dependencies, or [licensin
 | Existing .NET log | Import once with `trace_import_artifacts`. Use `trace_exceptions` for groups, counts, and sampled stacks. |
 | Live exception diagnosis | Read [capture](references/capture.md). Select a fresh process identity, capture a bounded interval, and inspect `trace_exceptions`. |
 | A particular exception or chain | Use `trace_query_events` with `kinds: ["exception"]`. Follow `nextCursor` with the same filters. |
-| INFO outcomes, retries, or correlations | Use `trace_query_log` for retained raw context. Follow `nextStartLine` with the same source and filter. |
-| Restore, build, test, or custom command | Read [execution](references/execution.md). Preserve the repository's target, arguments, configuration, and test verdict requirements. |
+| INFO outcomes, retries, or correlations | `trace_query_log {sessionId, sourceId, text?, startLine?, limitLines?}`; `sourceId` is a text event's source ID or a registered log artifact URI. Follow `nextStartLine` with the same source and filter. |
+| Run .NET tests | Use `trace_run_tests`, not `trace_run`. Prebuilt assembly: `{runner: "vstest", assemblies: ["<abs>.dll"], testCaseFilter?}`. Project: `{targetPath: "<abs>.csproj", configuration, filter?, noBuild?}`. Exact tests: add `tests: ["<FullyQualifiedName>"]` instead of a filter (3.2.0+; dotnet-test needs VSTest mode). It stores TRX, verdict, counts, and `testFailure` records; do not add loggers. Query failures with `trace_query_events {sessionId, kinds: ["testFailure"]}`. |
+| Restore, build, or custom command | Read [execution](references/execution.md). Preserve the repository's target, arguments, and configuration. |
 | Live CoreCLR CPU hotspot or call path | Select the original process with `trace_list_processes`. Attach with its fresh target identity for the requested interval. Inspect `trace_hotspots` on that session. |
 | Other captures or artifact imports | Read [capture](references/capture.md) for dependencies, acknowledgments, target identity, and analysis limits. |
 | Stored sessions, comparisons, or source correlation | Read [evidence](references/evidence.md) for detail recovery, provenance, and comparison limits. |
@@ -52,6 +53,11 @@ A summary already supplies group counts, sampled stored stacks, and coverage. Re
 Conclude when the evidence supports the diagnosis, target identity, relevant call path, and stated limits.
 Use filtered detail or pagination for a specific omitted fact. Follow any `outputLimit` read-only recovery call.
 Do not repeat a command or capture to recover omitted response text.
+
+A test run with `testCountStatus: "exact"` already supplies totals, executed and abnormal counts, and `testResults` names.
+A complete `testOutputSignals`, the `runnerOutput` streams, and `failureSources` supply warnings, runner errors, and the failing source lines.
+Do not reopen TRX, stdout, stderr, or the test source only to repeat those facts.
+`failureSources` reads the current file after the run; it does not prove that the tested binary was built from that text.
 
 Use raw fallback for a concrete unresolved question, contradiction, or relevant partial, unavailable, or unsupported analysis.
 First verify that the reader supports the event kinds or fields needed to resolve that gap.

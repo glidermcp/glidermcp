@@ -117,6 +117,8 @@ An exhausted page cannot repair incomplete collection. Unresolved invocation can
 | `get_derived_types` | `get_type_hierarchy` with base types and interfaces disabled |
 | `find_code` relationship intent | Discovery, then the direct relationship tool |
 | `find_code` with `literalText` | `search_text` |
+| `get_cascade_impact` | `analyze_change_impact` with `depth` 2 or more (Glider 18.0.0) |
+| `find_member_in_hierarchy` | `find_overrides` with `includeBaseChain=true` (Glider 18.0.0) |
 
 Rediscover constructor keys after updating to the consolidated contract. Pass the newly returned key unchanged.
 
@@ -127,7 +129,7 @@ Move the former `projectName` into project scope. Replace `sourceOnly=false` wit
 Replace `maxCandidates` with `take`; the discovery default is 50.
 For derived-only hierarchy, set `includeBaseTypes=false`, `includeInterfaces=false`, and `includeDerivedTypes=true`.
 The consolidated `find_code` removes `auto`, `literalText`, references, implementations, callers, and hierarchy intents.
-`get_type_info` and cascade analysis remain separate tools.
+`get_type_info` remains a separate tool.
 
 ## Released-contract fallback
 

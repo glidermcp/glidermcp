@@ -57,7 +57,8 @@ Keep the before text, diff, and loaded after-state consistent. Follow result pag
 ## Follow impact and behavior
 
 Use returned current symbol keys with `analyze_change_impact` where available. Inspect relevant callers, implementations, overrides, and tests.
-Use `get_cascade_impact` when a bounded transitive view materially helps the review.
+Set `depth` to 2 or more on `analyze_change_impact` when a bounded transitive view materially helps the review.
+Glider 18.0.0 removed `get_cascade_impact`; earlier packages keep it as a separate tool.
 Discover fresh keys when the current workspace cannot resolve a returned key. Never invent a replacement key from a name.
 
 A body-only change can alter behavior without changing a signature. Review conditions, exceptions, state changes, and observable effects.

@@ -15,6 +15,13 @@ Provide a version when several versions occur in the selected projects. Inspect 
 Use `find_external_dependency_usages` when the question concerns an assembly name or full metadata reference identity instead of a package ID.
 Do not assume the package ID and assembly name are identical.
 
+To learn which projects reference a package, set `view` to `projects` (Glider 18.0.0 and later).
+It returns a summary, the restored versions, and a page of project rows with `projectName`, `version`, and `usedInCode`.
+A project references the package when its restore assets list it for an active target, directly or transitively.
+A multi-targeted project has one row per target framework. The summary counts project files; `paging.total` counts rows.
+`usedInCode=null` means the use is unknown and never counts as unused. `usedInCode=false` is a cleanup candidate, not proof of removal.
+Follow `projectsSkip` paging for a complete list. Use the default usages view for source locations.
+
 Glider has no general proof that a NuGet package is unused. Zero semantic usages identify a cleanup candidate, not permission to remove it.
 Check for build targets, analyzers, source generators, runtime assets, reflection, configuration, and other non-source uses.
 Inspect project files, central package declarations, and restored assets with appropriate file tools when necessary.
@@ -25,7 +32,9 @@ For that version, compare the evaluated assets with assembly-level usage evidenc
 
 Glider 13.1.1 and later provide the following coverage contract. Inspect `assetsCoverage` in the installed tool result.
 The tool uses the evaluated `ProjectAssetsFile` captured during workspace load. Reload after changes to project properties or restore state.
-Inspect `assetsCoverage.complete` and each reported project's status and path before accepting an absence result.
+Inspect `assetsCoverage.complete` and each reported project's status before accepting an absence result.
+From Glider 18.0.0, compact output lists only projects whose restore assets could not be read, by name and status, with `unavailableProjectCount`.
+It also omits `resolvedPackage.projectMappings` and keeps `projectMappingCount`. Request `responseDetail=full` for paths and mappings.
 Missing, unreadable, malformed, or unresolved assets can yield `foundPackage: null` and `packagePresence: unknown`.
 Restore the affected projects with the intended configuration, then reload and retry. An ambiguous version requires a version selector.
 Coverage lists at most 25 projects, with failures first. If the list is truncated, narrow the request with `projectName`.
@@ -43,15 +52,18 @@ Reconcile every requested cell with the final report, whichever tools supply the
 Report each cell as `direct`, `transitive`, `absent`, or `unknown`, with its evidence and limits.
 A missing row is not evidence of absence. A package file is not evidence that a project selects or executes it.
 
-**UNRELEASED:** Use `find_package_usages.audit` only when the installed schema advertises it.
-Released Glider 13.1.1 retains the single-package semantic workflow above. Use project, restore, and build evidence to assemble other required facts.
+Glider 13.3.0 and later provide `find_package_usages.audit`. Use it when the installed schema advertises it.
+Earlier packages retain only the single-package semantic workflow above. Use project, restore, and build evidence to assemble other required facts.
 
 Supply `audit.packageIds` and exact `audit.contexts` when the requested scope is known.
 Each context contains `projectPath`, `targetFramework`, `configuration`, and `runtimeIdentifier`.
 An empty RID selects portable evaluation. Null leaves the requested RID unspecified; inspect `evaluatedContext`.
 Omitted contexts request discovery; inspect `contextScope` and `contextDiscoveryComplete` before treating that scope as complete.
-An audit accepts at most 100 package IDs, 100 contexts, and 2000 package-context rows, including discovered contexts.
-Pagination does not expand these limits. Split larger audits into smaller requests with explicit contexts.
+An audit accepts at most 100 package IDs, 100 contexts, and 2000 package-context rows. Explicit contexts must fit these limits.
+Glider 18.0.0 and later page discovered contexts in `projectWindow` windows of whole projects, so a large solution needs no explicit contexts.
+Follow `continuation` until it is null; it advances `audit.projectSkip` and carries `audit.discoveryId`. A changed project list requires a restart.
+For discovered contexts, row counts, completeness flags, and `pageComplete` describe the current window, not the whole audit.
+Earlier packages count discovered contexts against the limits; split those audits into smaller requests with explicit contexts.
 Keep `audit` separate from the singular `packageId`, `packageVersion`, and `projectName` selectors.
 
 ```json

@@ -15,6 +15,11 @@ Provide a version when several versions occur in the selected projects. Inspect 
 Use `find_external_dependency_usages` when the question concerns an assembly name or full metadata reference identity instead of a package ID.
 Do not assume the package ID and assembly name are identical.
 
+From Glider 19.0.0, `find_external_dependency_usages` also accepts `view: "projects"` for the projects that reference an assembly name.
+It covers every identity of that name. `references[]` lists each identity once with its `projectCount`, and each project row carries `usedInCode`.
+Its compact usage output reports `referencePathCount` and `referencingProjectCount` instead of path and project-name lists.
+An ambiguous name still fails, with one candidate row per identity; pass the chosen `referenceIdentity`. Request `responseDetail=full` for every list.
+
 To learn which projects reference a package, set `view` to `projects` (Glider 18.0.0 and later).
 It returns a summary, the restored versions, and a page of project rows with `projectName`, `version`, and `usedInCode`.
 A project references the package when its restore assets list it for an active target, directly or transitively.
@@ -113,6 +118,9 @@ Use `get_type_dependencies` with a source type key for declaration relationships
 The `uses` direction inspects base types, interfaces, fields, properties, method returns, and parameters.
 It omits method-body usages and filters most `System` types. The `used_by` direction follows symbol references.
 Do not treat either result as a complete dependency inventory. Inspect relevant bodies when the task needs implementation dependencies.
+From Glider 19.0.0, `uses` and `usedBy` are objects with `paging` and `items`, ordered by full name. `usesCount` and `usedByCount` stay full totals.
+Each list pages separately with `usesSkip`/`usesTake` and `usedBySkip`/`usedByTake` (default 100). Follow `paging.nextSkip` with other arguments unchanged.
+Earlier packages return complete arrays, and a large result can exceed the response limit.
 
 ## Inspect project references
 

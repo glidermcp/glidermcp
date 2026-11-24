@@ -39,6 +39,13 @@ The flags preserve the other result fields, including application state and any 
 Inspect those fields even when the operation reports success.
 Set `includePerFileDiff: true` only when separate file diffs are needed. It works independently of `includeDiff`.
 
+Glider 19.0.0 and later fit each edit result within the response limit.
+`rename_symbol`, `move_type`, `move_member`, and `consolidate_package_version` list at most `maxPaths` changed files (default 100; 0 returns counts only).
+Count fields such as `filesChanged` stay full totals. `maxDiffChars` defaults to 40,000, and the response limit can cut the diff further.
+Inspect `pathsTruncated`, `diffTruncated`, and `truncatedForSize`. `add_member` and `add_type` report the same flags without `maxPaths`.
+A cut list or diff does not mean a partial edit. Never repeat an applied edit to see more; use Git or `find_references` for the full file list.
+Rerun a preview with a higher `maxPaths` when the complete preview list matters.
+
 **Unreleased:** Development builds after 13.4.0 default `includePerFileDiff` to false.
 Released 13.4.0 defaults it to true on `rename_symbol`, `move_type`, `move_member`, `add_member`, `add_type`, and `consolidate_package_version`.
 Set it explicitly to false on those tools for one unified diff, or set both flags false for compact output.
@@ -83,6 +90,10 @@ Glider edit tools update the workspace as part of their operation. Inspect their
 | Content of existing C# files | Watcher-enabled semantic reads usually ingest pending changes. Use `sync` when watching is disabled or explicit ingestion is needed. |
 | Added, removed, or renamed files; project or reference changes | Use `reload` when an explicit structural refresh is needed. `sync` preserves the project graph. |
 | Different worktree or solution | Verify status, then `load` the intended absolute solution/project path. |
+
+Glider 19.0.0 and later return at most `maxPaths` paths in each `sync` list: `updated`, `skipped`, and `files` (default 100; 0 returns counts only).
+`totalSynced` and `skippedCount` stay full totals. `files` covers named paths only, lists failures first, and comes with `fileStates` counts.
+A second `sync` cannot continue a cut list, because it sees the already synchronized state. Check `pathsTruncated` and the counts instead.
 
 ## Interpret diagnostics
 

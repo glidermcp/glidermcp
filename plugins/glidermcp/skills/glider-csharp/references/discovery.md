@@ -131,6 +131,12 @@ For derived-only hierarchy, set `includeBaseTypes=false`, `includeInterfaces=fal
 The consolidated `find_code` removes `auto`, `literalText`, references, implementations, callers, and hierarchy intents.
 `get_type_info` remains a separate tool.
 
+`get_type_info` `memberCount` is the type's total. Glider 20.0.0 adds `matchingMemberCount` for a `memberKinds` filter, also with `includeMembers=false`.
+The member list keeps the leading members that fit the response limit and sets `membersTruncated`, as `maxMembers` does. Its hint names the remedy: narrow `memberKinds`, or page the members with `get_structure`.
+
+`analyze_complexity` takes `pathStyle` (`absolute` by default, or `relative` to the loaded root).
+A method row has `filePath` only when it differs from its type's, as in another part of a partial type.
+
 ## Released-contract fallback
 
 Use this section when the installed schema lacks the consolidated contract.

@@ -46,6 +46,11 @@ Inspect `pathsTruncated`, `diffTruncated`, and `truncatedForSize`. `add_member` 
 A cut list or diff does not mean a partial edit. Never repeat an applied edit to see more; use Git or `find_references` for the full file list.
 Rerun a preview with a higher `maxPaths` when the complete preview list matters.
 
+Glider 20.0.0 gives `write_file`, `format_document`, `organize_usings`, `replace_member`, and `replace_range` the same fit. Their `maxDiffChars` default falls from 50,000 to 40,000.
+`maxDiffChars` 0 removes only that cap; the response limit still cuts the diff, and `truncatedForSize` reports it. The first three also report `pathsTruncated` beside `changedFiles`.
+`replace_member` and `replace_range` return only their outcome fields with `responseOmitted` when even an empty diff does not fit.
+Follow its `guidance`: verify the file, use `get_diagnostics` on it, and never repeat the write.
+
 **Unreleased:** Development builds after 13.4.0 default `includePerFileDiff` to false.
 Released 13.4.0 defaults it to true on `rename_symbol`, `move_type`, `move_member`, `add_member`, `add_type`, and `consolidate_package_version`.
 Set it explicitly to false on those tools for one unified diff, or set both flags false for compact output.
@@ -109,6 +114,11 @@ An incomplete check is not a clean check. Do not silently disable the guard beca
 
 After a coherent change, use `get_diagnostics` for the affected project or solution. Compare against existing errors when necessary.
 For broad cleanup, `diagnostic_hotspots` helps select the next area before inspecting individual diagnostics.
+
+Glider 20.0.0 bounds `get_diagnostics` with `summaryOnly`. `byProject` and `topIds` keep their 50 largest groups, with exact `byProjectCount` or `topIdsCount` and `truncatedLists` when cut.
+Page every group with `diagnostic_hotspots` and `groupBy=project` or `groupBy=id`. Its group rows carry their value once, under `filePath`, `projectName`, `category`, or `id`, with no `key`.
+The `top*` lists come on the first page only, without the list that repeats `groupBy`. A cut list reports an exact `<list>Count` and `truncatedLists`.
+Projects that share a name stay separate rows. A row adds `projectFilePath` only when another loaded project has the same name.
 
 Run relevant tests to check behavior. Run required build, test, and package commands at validation checkpoints.
 Use GliderTrace for execution evidence when available, or the repository's normal CLI commands.

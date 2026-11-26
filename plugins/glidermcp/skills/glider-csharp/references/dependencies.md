@@ -127,6 +127,12 @@ Earlier packages return complete arrays, and a large result can exceed the respo
 Start with `get_project_graph` for direct edges, roots, leaves, transitive reachability, and cycles in the loaded workspace.
 Load sufficient solution scope for the question. A project absent from this graph may simply be outside the loaded workspace.
 
+Glider 20.0.0 pages the focused project's name lists. A list that does not fit is cut, `truncatedLists` names it, and its hint names the `list` value to page.
+With `projectName`, set `list` to `directDependencies`, `directDependents`, `transitiveDependencies`, or `transitiveDependents`. `skip` and `take` then page that list as `<list>: { paging, items }`. Exact counts stay on every response.
+A project name that several loaded projects share appears as `Name@path`; pass that reference as `projectName`. `find_package_usages` project rows add `projectFilePath` only when names collide.
+A not-found project name in `get_project_graph`, `find_unused_project_references`, `find_external_dependency_usages`, or `find_package_usages` returns the 25 closest names, not the first 25 alphabetically.
+Read `availableProjectCount`, `availableProjectsTruncated`, and `server_status` with `includeProjects` for the exact name.
+
 Use `find_unused_project_references` to assess direct `ProjectReference` entries.
 It removes each reference in memory and checks for new compiler errors in the referencing project. It does not modify project files.
 It does not test `PackageReference` entries or prove that a whole project is unused.

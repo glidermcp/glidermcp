@@ -26,6 +26,11 @@ A loaded workspace can belong to another worktree. Changing the shell directory 
 - If the intended workspace is already loading, wait for completion. A load of the same path can join the active operation.
 - For a large solution, load the relevant project when its scope is sufficient. Widen the workspace when cross-project evidence is needed.
 
+Glider 20.0.0 `server_status` reports the response limit as `maxResponseChars` (default 40,000; 0 means off). A server launch option sets it, not a call argument.
+With `includeProjects`, `projects` is `{ paging, items }`, paged by `projectsSkip` and `projectsTake` (default 200), with an optional `pathStyle`. `projectCount` is always the total.
+Raw workspace diagnostic messages page with `workspaceDiagnosticsSkip` and `workspaceDiagnosticsTake`. Grouped ones keep one example per group, with an exact `groupCount` and `groupsTruncated`.
+`load` and `reload` return the longest project-list prefix that fits, with `projectsTruncated`. Page the rest through `server_status`.
+
 Repeat the status check after a server restart or suspected root mismatch. Do not add a status call before every tool call.
 Relative scope paths use `solutionRoot`, which can differ from the repository root and watched directory. Prefer absolute paths when uncertain.
 The file tools authorize paths under the loaded solution or project directory. Referenced project membership does not expand this boundary.
@@ -157,8 +162,14 @@ For package APIs, dependency cleanup, or project architecture, read [dependencie
 Check `success`, application state, coverage, and recovery guidance before continuing.
 If an edit applied but synchronization failed, refresh the workspace and verify the result. Do not repeat the write blindly.
 For incomplete results, follow the suggested scope or pagination instead of claiming complete coverage.
+Glider 20.0.0 lowers the default response limit from 60,000 to 40,000 characters, so paged tools return fewer rows per page.
+A cut page reports the flag its tool names (`truncatedForSize`, or `truncated` on `changed_symbols`) and `nextSkip`.
+Follow `paging.nextSkip` with the other arguments unchanged.
+`batch` fits each step to the limit less its envelope and every step's notice, so a fitted sync, edit, or page is returned instead of a completion notice. Earlier steps take precedence.
+An omitted step carries `executionStatus` and `guidance`. Read its effect with narrower bounds, and never repeat a completed write.
 For an ambiguous file outline, retain the path and select a project context. In `find_code`, use `scope.mode=project` and `scope.projectName`.
 Development builds after 12.4.8 provide `candidateProjectNames` and retry arguments. Earlier builds name the contexts in the error.
+Glider 20.0.0 lists at most 25 `candidateProjectNames` and adds `candidateProjectCount` and `candidateProjectsTruncated`. If the owning project is cut, load that project alone.
 
 Before reporting a suspected product defect, verify the root and retry when practical. State version, platform, expected behavior, and observed limits.
 Search public issues for the same product and symptom. For an open issue lacking reproduction, contribute new sanitized evidence as a comment.

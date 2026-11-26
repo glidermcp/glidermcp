@@ -42,6 +42,10 @@ These limits apply to Git mode; the explicit-hunk contract remains unchanged.
 For later pages, retain the selector and pass `comparison.snapshotId` as `git.snapshotId` with the next `skip`.
 Restart pagination after a snapshot mismatch. Inspect skipped files and completeness even when the symbol page is empty.
 
+Glider 20.0.0 sends `comparison.files`, `completeness.unsupportedFiles`, and `completeness.unresolvedHunks` on the first page (`skip` 0) only. Later pages keep the totals, completeness counts, `comparison.fileCount`, and `snapshotId`.
+Page one list with `view` set to `files` (Git mode only), `unsupportedFiles`, or `unresolvedHunks`, plus `skip` and `take`, under the same selector and `snapshotId`. The result is `<view>: { paging, items }` without declarations.
+From 20.0.0, identical Git-mode calls return the same hunks, totals, and pages. Earlier packages could differ between calls, so do not mix their pages.
+
 ### Explicit hunks and released fallback
 
 For Glider 13.1.1, prepare the selected Git comparison yourself. The hunk mode remains available in newer builds.

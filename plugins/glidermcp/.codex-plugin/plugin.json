@@ -1,6 +1,6 @@
 {
   "name": "glidermcp",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Connect coding agents to the local GliderMCP C# semantic analysis server.",
   "author": {
     "name": "GliderMCP",
